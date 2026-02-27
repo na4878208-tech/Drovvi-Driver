@@ -8,7 +8,7 @@
 
 
     <application
-        android:label="Logistics Driver"
+        android:label="Drovvi - Driver"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:hardwareAccelerated="true"
