@@ -1,9 +1,14 @@
+// lib/repositories/dashboard_repository.dart
+
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:logisticdriverapp/constants/local_storage.dart';
 import '../../../../constants/api_url.dart';
 import '../../../../constants/dio.dart';
 import 'home_modal.dart';
 
+/// Repository Provider
 final dashboardRepositoryProvider = Provider<DashboardRepository>((ref) {
   final dio = ref.watch(dioProvider);
   return DashboardRepository(dio: dio);
@@ -14,37 +19,73 @@ class DashboardRepository {
 
   DashboardRepository({required this.dio});
 
-  Future<String> updateAvailability(bool isOnline) async {
+  /// ===============================
+  /// FETCH DASHBOARD DATA
+  /// ===============================
+  Future<DashboardModel> fetchDashboard() async {
     try {
-      final resp = await dio.put(
-        ApiUrls.available,
-        data: {"status": isOnline ? "available" : "off_duty"},
+      final token = await LocalStorage.getToken();
+
+      final response = await dio.get(
+        ApiUrls.dashboard,
+        options: Options(
+          headers: {
+            "Content-Type": "application/json",
+            if (token != null && token.isNotEmpty)
+              "Authorization": "Bearer $token",
+          },
+        ),
       );
 
-      if (resp.statusCode == 200) {
-        // return status from backend
-        return resp.data["data"]["status"] ?? (isOnline ? "available" : "off_duty");
-      }
+      if (response.statusCode == 200) {
+        if (kDebugMode) {
+          print("===== DRIVER DASHBOARD RESPONSE =====");
+          print(response.data);
+          print("====================================");
+        }
 
-      throw Exception(resp.data["message"] ?? "Failed to update status");
+        return DashboardModel.fromJson(response.data);
+      } else {
+        throw Exception(response.data['message'] ?? 'Failed to load dashboard');
+      }
     } on DioError catch (e) {
-      final msg = e.response?.data["message"] ?? e.message;
-      throw Exception(msg);
+      final msg = e.response?.data['message'] ?? e.message;
+      throw Exception("Network error: $msg");
     }
   }
 
-  Future<DashboardModel> fetchDashboard() async {
+  /// ===============================
+  /// UPDATE DRIVER AVAILABILITY
+  /// ===============================
+  Future<Map<String, dynamic>> updateAvailability(bool isOnline) async {
     try {
-      final resp = await dio.get(ApiUrls.dashboard);
-      if (resp.statusCode == 200) {
-        final data = resp.data as Map<String, dynamic>;
-        return DashboardModel.fromJson(data);
+      final token = await LocalStorage.getToken();
+
+      final response = await dio.put(
+        ApiUrls.available,
+        data: {"status": isOnline ? "available" : "off_duty"},
+        options: Options(
+          headers: {
+            "Content-Type": "application/json",
+            if (token != null && token.isNotEmpty)
+              "Authorization": "Bearer $token",
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        return {
+          "status": response.data['data']?['status'],
+          "canReceiveOrders":
+              response.data['data']?['can_receive_orders'] ?? false,
+          "message": response.data['message'] ?? '',
+        };
       } else {
-        throw Exception('Failed to load dashboard: ${resp.statusCode}');
+        throw Exception(response.data['message'] ?? 'Failed to update status');
       }
     } on DioError catch (e) {
-      final msg = e.response?.data ?? e.message;
-      throw Exception('Network error: $msg');
+      final msg = e.response?.data['message'] ?? e.message;
+      throw Exception(msg);
     }
   }
 }

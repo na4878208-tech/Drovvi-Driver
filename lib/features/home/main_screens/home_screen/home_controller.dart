@@ -3,12 +3,13 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'home_modal.dart';
 import 'home_repo.dart';
 
-final dashboardControllerProvider = StateNotifierProvider<
-    DashboardController, AsyncValue<DashboardModel?>>((ref) {
-  final repo = ref.watch(dashboardRepositoryProvider);
-  return DashboardController(repo);
-});
-
+final dashboardControllerProvider =
+    StateNotifierProvider<DashboardController, AsyncValue<DashboardModel?>>((
+      ref,
+    ) {
+      final repo = ref.watch(dashboardRepositoryProvider);
+      return DashboardController(repo);
+    });
 
 class DashboardController extends StateNotifier<AsyncValue<DashboardModel?>> {
   final DashboardRepository repository;
@@ -29,20 +30,34 @@ class DashboardController extends StateNotifier<AsyncValue<DashboardModel?>> {
   }
 
   /// Toggle online/offline
-  Future<String> toggleAvailability(bool isOnline) async {
-    if (isUpdatingStatus) return state.value?.driverInfo.status ?? "off_duty";
+  Future<void> toggleAvailability(bool value) async {
+    if (state.value == null) return;
 
-    isUpdatingStatus = true;
+    final driver = state.value!.driverInfo;
+
+    /// ❌ Suspended
+    if (driver.status == "suspended") {
+      throw Exception("Your account is suspended");
+    }
+
+    /// ❌ On trip → cannot go offline
+    if (driver.status == "on_trip" && value == false) {
+      throw Exception("You cannot go offline while on a trip");
+    }
+
     try {
-      final newStatus = await repository.updateAvailability(isOnline);
+      isUpdatingStatus = true;
 
-      final current = state.value;
-      if (current != null) {
-        state = AsyncValue.data(
-          current.copyWithStatus(newStatus),
-        );
-      }
-      return newStatus;
+      final result = await repository.updateAvailability(value);
+
+      final newStatus = result['status'];
+
+      /// update local dashboard state
+      final current = state.value!;
+
+      final updatedDriver = current.driverInfo.copyWith(status: newStatus);
+
+      state = AsyncData(current.copyWith(driverInfo: updatedDriver));
     } finally {
       isUpdatingStatus = false;
     }

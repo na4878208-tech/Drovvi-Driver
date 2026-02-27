@@ -1,17 +1,16 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:logisticdriverapp/constants/colors.dart';
-import '../../constants/validation_regx.dart';
-import '../../export.dart';
+import 'package:logisticdriverapp/features/authentication/Registration_flow/create_password.dart';
+import '../../../../constants/validation_regx.dart';
+import '../../../../export.dart';
 
-class VerificationScreen extends StatefulWidget {
-  const VerificationScreen({Key? key}) : super(key: key);
+class OtpRegistrationScreen extends StatefulWidget {
+  const OtpRegistrationScreen({super.key});
 
   @override
-  State<VerificationScreen> createState() => _VerificationScreenState();
+  State<OtpRegistrationScreen> createState() => _OtpRegistrationScreenState();
 }
 
-class _VerificationScreenState extends State<VerificationScreen> {
+class _OtpRegistrationScreenState extends State<OtpRegistrationScreen> {
   final TextEditingController otpController = TextEditingController();
   final _formKey = GlobalKey<FormState>(); // Form key for validation
   int _seconds = 59;
@@ -74,7 +73,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
                 ),
                 const SizedBox(height: 30),
                 CustomText(
-                  txt: "Enter Verification Code",
+                  txt: "Registration Verification Code",
                   color: AppColors.electricTeal,
                   fontSize: 25,
                   fontWeight: FontWeight.w700,

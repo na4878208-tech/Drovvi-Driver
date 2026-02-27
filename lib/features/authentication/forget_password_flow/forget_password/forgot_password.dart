@@ -141,11 +141,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../common_widgets/cuntom_textfield.dart';
-import '../../../common_widgets/custom_button.dart';
-import '../../../constants/colors.dart';
-import '../../../constants/gap.dart';
-import '../../../constants/validation_regx.dart';
+import '../../../../common_widgets/cuntom_textfield.dart';
+import '../../../../common_widgets/custom_button.dart';
+import '../../../../constants/colors.dart';
+import '../../../../constants/gap.dart';
+import '../../../../constants/validation_regx.dart';
 import 'forget_password_controller.dart';
 import 'forget_password_modal.dart';
 
@@ -198,7 +198,7 @@ class _ForgotPasswordState extends ConsumerState<ForgotPassword> {
               ScaffoldMessenger.of(
                 context,
               ).showSnackBar(SnackBar(content: Text(data.message)));
-              context.go('/otp'); // Navigate on success
+              context.go('/otp-forget'); // Navigate on success
             }
           },
           loading: () {},

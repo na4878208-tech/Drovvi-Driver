@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
-import '../../constants/colors.dart';
+import '../../../constants/colors.dart';
 
 class RegisterSuccessful extends StatefulWidget {
   const RegisterSuccessful({super.key});

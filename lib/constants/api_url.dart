@@ -1,6 +1,6 @@
-abstract class ApiUrls  {
+abstract class ApiUrls {
   //Base Url
-  static String baseurl = "https://seedlink.skyguruu.com/api/v1";
+  static String baseurl = "https://drovvi.com/api/v1";
 
   //Login
   static String login = "/driver/auth/login";
@@ -14,9 +14,18 @@ abstract class ApiUrls  {
   // Available status
   static String available = "/driver/availability";
 
-  // Available orders
-  static String availableorders = "/driver/orders/available";
 
   // my orders
   static String myorders = "/driver/orders/my-orders";
+
+  // order details
+  static String ordersdetails = "/driver/orders";
+
+  // Current Location
+  static const updateDriverLocation = "/driver/location";
+
+  //Earning history
+  static const earnings = "/driver/earnings";
+
+  static const earningsSummary = "/driver/earnings/summary";
 }

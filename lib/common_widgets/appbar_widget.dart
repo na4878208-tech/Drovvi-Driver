@@ -72,7 +72,7 @@ class BuyerAppBarWidget extends ConsumerWidget implements PreferredSizeWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 10),
             // TabBar
             SizedBox(
               height: 50,

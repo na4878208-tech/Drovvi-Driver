@@ -1,4 +1,4 @@
-package com.example.logisticdriverapp
+package com.skyguru.logisticdriver
 
 import io.flutter.embedding.android.FlutterActivity
 

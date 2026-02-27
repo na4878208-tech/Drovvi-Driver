@@ -1,19 +1,24 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.skyguru.logisticdriver">
 
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <!-- <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/> -->
+
+
     <application
-        android:label="logisticdriverapp"
+        android:label="Logistics Driver"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:hardwareAccelerated="true"
         android:largeHeap="true"
+        android:usesCleartextTraffic="true"
         android:enableOnBackInvokedCallback="true"
         >
         <meta-data
                 android:name="com.google.android.geo.API_KEY"
-                android:value="AIzaSyBrF_4PwauOkQ_RS8iGYhAW1NIApp3IEf0" />
+                android:value="AIzaSyAvuqv3vjx8JCwe-dKXJWV_ggqraBqIFKs" />
         <activity
             android:name=".MainActivity"
             android:exported="true"

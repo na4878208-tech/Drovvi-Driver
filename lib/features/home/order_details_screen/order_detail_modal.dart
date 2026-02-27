@@ -1,9 +1,9 @@
 // Helper functions
 int parseInt(dynamic value) {
-  print("parseInt received: $value, type: ${value.runtimeType}");
   if (value == null) return 0;
   if (value is int) return value;
   if (value is String) return int.tryParse(value) ?? 0;
+  if (value is double) return value.toInt();
   return 0;
 }
 
@@ -15,11 +15,16 @@ double parseDouble(dynamic value) {
   return 0.0;
 }
 
+/// ---------------- ORDER MODEL ----------------
 class OrderModel {
   final int id;
   final String orderNumber;
   final String trackingCode;
   final String status;
+  final String paymentStatus;
+  final bool isMultiStop;
+  final int stopsCount;
+  final List<OrderStop> stops;
 
   final Customer customer;
   final Pickup pickup;
@@ -30,7 +35,7 @@ class OrderModel {
   final OrderDetails orderDetails;
   final AddOns addOns;
   final Payment payment;
-  final List tracking;
+  final List<dynamic> tracking;
   final OrderTimestamps timestamps;
 
   OrderModel({
@@ -38,6 +43,10 @@ class OrderModel {
     required this.orderNumber,
     required this.trackingCode,
     required this.status,
+    required this.paymentStatus,
+    required this.isMultiStop,
+    required this.stopsCount,
+    required this.stops,
     required this.customer,
     required this.pickup,
     required this.delivery,
@@ -53,58 +62,94 @@ class OrderModel {
   factory OrderModel.fromJson(Map<String, dynamic> json) {
     return OrderModel(
       id: parseInt(json['id']),
-      orderNumber: json['order_number'],
-      trackingCode: json['tracking_code'],
-      status: json['status'] ?? "",
-
-      customer: Customer.fromJson(json['customer']),
-      pickup: Pickup.fromJson(json['pickup']),
-      delivery: Delivery.fromJson(json['delivery']),
-
+      orderNumber: json['order_number'] ?? '',
+      trackingCode: json['tracking_code'] ?? '',
+      status: json['status'] ?? '',
+      paymentStatus: json['payment_status'] ?? '',
+      isMultiStop:
+          (json['is_multi_stop'] == 1 || json['is_multi_stop'] == true),
+      stopsCount: parseInt(json['stops_count']),
+      stops: (json['stops'] as List<dynamic>? ?? [])
+          .map((e) => OrderStop.fromJson(e))
+          .toList(),
+      customer: Customer.fromJson(json['customer'] ?? {}),
+      pickup: Pickup.fromJson(json['pickup'] ?? {}),
+      delivery: Delivery.fromJson(json['delivery'] ?? {}),
       items: (json['items'] as List<dynamic>? ?? [])
           .map((e) => Item.fromJson(e))
           .toList(),
-
-      packageInfo: json['package'] != null 
-    ? PackageInfo.fromJson(json['package']) 
-    : PackageInfo(totalItems: 0, totalWeight: 0, totalValue: 0, description: ""),
-
-orderDetails: json['order_details'] != null
-    ? OrderDetails.fromJson(json['order_details'])
-    : OrderDetails(serviceType: "", vehicleType: "", priority: "", distanceKm: ""),
-
-addOns: json['add_ons'] != null
-    ? AddOns.fromJson(json['add_ons'])
-    : AddOns(selected: [], cost: 0, quickFlags: QuickFlags(
-        hasInsurance: false,
-        requiresSignature: false,
-        isFragile: false,
-        needsPhoto: false,
-        ageCheck: false,
-        contactless: false,
-      )),
-
-payment: json['payment'] != null
-    ? Payment.fromJson(json['payment'])
-    : Payment(
-        estimatedCost: "0",
-        finalCost: "0",
-        serviceFee: "0",
-        taxAmount: "0",
-        addOnsCost: "0",
-        driverEarning: 0.0,
-        paymentMethod: "",
-        paymentStatus: "",
-      ),
-
-timestamps: json['timestamps'] != null
-    ? OrderTimestamps.fromJson(json['timestamps'])
-    : OrderTimestamps(createdAt: "", assignedAt: null, pickedUpAt: null, completedAt: null),
-
+      packageInfo: json['package'] != null
+          ? PackageInfo.fromJson(json['package'])
+          : PackageInfo.empty(),
+      orderDetails: json['order_details'] != null
+          ? OrderDetails.fromJson(json['order_details'])
+          : OrderDetails.empty(),
+      addOns: json['add_ons'] != null
+          ? AddOns.fromJson(json['add_ons'])
+          : AddOns.empty(),
+      payment: json['payment'] != null
+          ? Payment.fromJson(json['payment'])
+          : Payment.empty(),
       tracking: (json['tracking'] as List<dynamic>? ?? []),
-
+      timestamps: json['timestamps'] != null
+          ? OrderTimestamps.fromJson(json['timestamps'])
+          : OrderTimestamps.empty(),
     );
   }
+}
+
+/// ---------------- ORDER STOP ----------------
+class OrderStop {
+  final int id;
+  final String stopType;
+  final int sequenceNumber;
+  final String address;
+  final String city;
+  final String state;
+  final String latitude;
+  final String longitude;
+  final String contactName;
+  final String contactPhone;
+  final String notes;
+  final String status;
+  final String? arrivalTime;
+  final String? departureTime;
+  final bool requiresOtp; // ✅ ADD
+
+  OrderStop({
+    required this.id,
+    required this.stopType,
+    required this.sequenceNumber,
+    required this.address,
+    required this.city,
+    required this.state,
+    required this.latitude,
+    required this.longitude,
+    required this.contactName,
+    required this.contactPhone,
+    required this.notes,
+    required this.status,
+    this.arrivalTime,
+    this.departureTime,
+    this.requiresOtp = false, // ✅ DEFAULT
+  });
+
+  factory OrderStop.fromJson(Map<String, dynamic> json) => OrderStop(
+    id: parseInt(json['id']),
+    stopType: json['stop_type'] ?? '',
+    sequenceNumber: parseInt(json['sequence_number']),
+    address: json['address'] ?? '',
+    city: json['city'] ?? '',
+    state: json['state'] ?? '',
+    latitude: json['latitude']?.toString() ?? '',
+    longitude: json['longitude']?.toString() ?? '',
+    contactName: json['contact_name'] ?? '',
+    contactPhone: json['contact_phone'] ?? '',
+    notes: json['notes'] ?? '',
+    status: json['status'] ?? '',
+    arrivalTime: json['arrival_time'],
+    departureTime: json['departure_time'],
+  );
 }
 
 /// ---------------- CUSTOMER ----------------
@@ -148,8 +193,8 @@ class Pickup {
     address: json['address'] ?? "",
     city: json['city'] ?? "",
     state: json['state'] ?? "",
-    latitude: json['latitude'] ?? "",
-    longitude: json['longitude'] ?? "",
+    latitude: json['latitude']?.toString() ?? "",
+    longitude: json['longitude']?.toString() ?? "",
     contactName: json['contact_name'] ?? "",
     contactPhone: json['contact_phone'] ?? "",
     scheduledDate: json['scheduled_date'],
@@ -190,8 +235,8 @@ class Delivery {
     address: json['address'] ?? "",
     city: json['city'] ?? "",
     state: json['state'] ?? "",
-    latitude: json['latitude'] ?? "",
-    longitude: json['longitude'] ?? "",
+    latitude: json['latitude']?.toString() ?? "",
+    longitude: json['longitude']?.toString() ?? "",
     contactName: json['contact_name'] ?? "",
     contactPhone: json['contact_phone'] ?? "",
     scheduledDate: json['scheduled_date'],
@@ -255,15 +300,19 @@ class PackageInfo {
     required this.description,
   });
 
-  factory PackageInfo.fromJson(Map<String, dynamic> json) {
-    print("total_weight type: ${json['total_weight'].runtimeType}");
-    return PackageInfo(
-      totalItems: parseInt(json['total_items']),
-      totalWeight: parseInt(json['total_weight']),
-      totalValue: parseInt(json['total_value']),
-      description: json['description'] ?? '',
-    );
-  }
+  factory PackageInfo.fromJson(Map<String, dynamic> json) => PackageInfo(
+    totalItems: parseInt(json['total_items']),
+    totalWeight: parseInt(json['total_weight']),
+    totalValue: parseInt(json['total_value']),
+    description: json['description'] ?? '',
+  );
+
+  factory PackageInfo.empty() => PackageInfo(
+    totalItems: 0,
+    totalWeight: 0,
+    totalValue: 0,
+    description: '',
+  );
 }
 
 /// ---------------- ORDER DETAILS ----------------
@@ -286,12 +335,19 @@ class OrderDetails {
     priority: json['priority'] ?? "",
     distanceKm: (json['distance_km'] ?? "").toString(),
   );
+
+  factory OrderDetails.empty() => OrderDetails(
+    serviceType: '',
+    vehicleType: '',
+    priority: '',
+    distanceKm: '',
+  );
 }
 
 /// ---------------- ADD ONS ----------------
 class AddOns {
   final List<AddOnSelected> selected;
-  final dynamic cost;
+  final double cost;
   final QuickFlags quickFlags;
 
   AddOns({
@@ -301,12 +357,15 @@ class AddOns {
   });
 
   factory AddOns.fromJson(Map<String, dynamic> json) => AddOns(
-    selected: (json['selected'] as List)
+    selected: (json['selected'] as List<dynamic>? ?? [])
         .map((e) => AddOnSelected.fromJson(e))
         .toList(),
-    cost: json['cost'],
-    quickFlags: QuickFlags.fromJson(json['quick_flags']),
+    cost: parseDouble(json['cost']),
+    quickFlags: QuickFlags.fromJson(json['quick_flags'] ?? {}),
   );
+
+  factory AddOns.empty() =>
+      AddOns(selected: [], cost: 0.0, quickFlags: QuickFlags.empty());
 }
 
 class AddOnSelected {
@@ -325,11 +384,11 @@ class AddOnSelected {
   });
 
   factory AddOnSelected.fromJson(Map<String, dynamic> json) => AddOnSelected(
-    code: json['code'],
-    name: json['name'],
-    description: json['description'],
-    icon: json['icon'],
-    driverAction: json['driver_action'],
+    code: json['code'] ?? '',
+    name: json['name'] ?? '',
+    description: json['description'] ?? '',
+    icon: json['icon'] ?? '',
+    driverAction: json['driver_action'] ?? '',
   );
 }
 
@@ -351,12 +410,21 @@ class QuickFlags {
   });
 
   factory QuickFlags.fromJson(Map<String, dynamic> json) => QuickFlags(
-    hasInsurance: json['has_insurance'],
-    requiresSignature: json['requires_signature'],
-    isFragile: json['is_fragile'],
-    needsPhoto: json['needs_photo'],
-    ageCheck: json['age_check'],
-    contactless: json['contactless'],
+    hasInsurance: json['has_insurance'] ?? false,
+    requiresSignature: json['requires_signature'] ?? false,
+    isFragile: json['is_fragile'] ?? false,
+    needsPhoto: json['needs_photo'] ?? false,
+    ageCheck: json['age_check'] ?? false,
+    contactless: json['contactless'] ?? false,
+  );
+
+  factory QuickFlags.empty() => QuickFlags(
+    hasInsurance: false,
+    requiresSignature: false,
+    isFragile: false,
+    needsPhoto: false,
+    ageCheck: false,
+    contactless: false,
   );
 }
 
@@ -392,6 +460,17 @@ class Payment {
     paymentMethod: json['payment_method'] ?? '',
     paymentStatus: json['payment_status'] ?? '',
   );
+
+  factory Payment.empty() => Payment(
+    estimatedCost: '0',
+    finalCost: '0',
+    serviceFee: '0',
+    taxAmount: '0',
+    addOnsCost: '0',
+    driverEarning: 0.0,
+    paymentMethod: '',
+    paymentStatus: '',
+  );
 }
 
 /// ---------------- TIMESTAMPS ----------------
@@ -410,9 +489,16 @@ class OrderTimestamps {
 
   factory OrderTimestamps.fromJson(Map<String, dynamic> json) =>
       OrderTimestamps(
-        createdAt: json['created_at'],
+        createdAt: json['created_at'] ?? '',
         assignedAt: json['assigned_at'],
         pickedUpAt: json['picked_up_at'],
         completedAt: json['completed_at'],
       );
+
+  factory OrderTimestamps.empty() => OrderTimestamps(
+    createdAt: '',
+    assignedAt: null,
+    pickedUpAt: null,
+    completedAt: null,
+  );
 }

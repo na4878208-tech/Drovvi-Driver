@@ -1,4 +1,5 @@
 class AppValidators {
+
   // ---------------- EMAIL ----------------
   static String? email(String? value) {
     if (value == null || value.trim().isEmpty) {
@@ -28,7 +29,7 @@ class AppValidators {
     return null;
   }
 
-  // ---------------- NEW PASSWORD (STRONG) ----------------
+  // ---------------- STRONG PASSWORD ----------------
   static String? newPassword(String? value) {
     if (value == null || value.isEmpty) {
       return "New password is required";
@@ -87,7 +88,7 @@ class AppValidators {
     return null;
   }
 
-  // ---------------- FIRST NAME / LAST NAME ----------------
+  // ---------------- NAME ----------------
   static String? name(String? value, {String fieldName = "Name"}) {
     if (value == null || value.trim().isEmpty) {
       return "$fieldName is required";
@@ -104,7 +105,7 @@ class AppValidators {
     return null;
   }
 
-  // ---------------- PHONE NUMBER ----------------
+  // ---------------- PHONE ----------------
   static String? phone(String? value) {
     if (value == null || value.trim().isEmpty) {
       return "Mobile number is required";
@@ -117,18 +118,74 @@ class AppValidators {
     return null;
   }
 
-  // ---------------- DATE OF BIRTH ----------------
+  // ---------------- DATE (YYYY-MM-DD) ----------------
   static String? dob(String? value) {
     if (value == null || value.trim().isEmpty) {
-      return "Date of Birth is required";
+      return "Date is required";
     }
 
-    // Check format YYYY-MM-DD
     final dobRegex = RegExp(r'^\d{4}-\d{2}-\d{2}$');
     if (!dobRegex.hasMatch(value)) {
-      return "Enter DOB in YYYY-MM-DD format";
+      return "Enter date in YYYY-MM-DD format";
     }
 
+    return null;
+  }
+
+  // ---------------- FUTURE DATE (EXPIRY) ----------------
+  static String? expiryDate(String? value, {String field = "Expiry Date"}) {
+    if (value == null || value.trim().isEmpty) {
+      return "$field is required";
+    }
+
+    final regex = RegExp(r'^\d{4}-\d{2}-\d{2}$');
+    if (!regex.hasMatch(value)) {
+      return "Enter date in YYYY-MM-DD format";
+    }
+
+    final date = DateTime.tryParse(value);
+    if (date == null) {
+      return "Invalid date";
+    }
+
+    if (date.isBefore(DateTime.now())) {
+      return "$field must be a future date";
+    }
+
+    return null;
+  }
+
+  // ---------------- LICENSE NUMBER ----------------
+  static String? licenseNumber(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return "License number is required";
+    }
+
+    if (value.length < 5) {
+      return "License number is too short";
+    }
+
+    return null;
+  }
+
+  // ---------------- PRDP NUMBER ----------------
+  static String? prdpNumber(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return "PrDP number is required";
+    }
+
+    if (value.length < 5) {
+      return "Invalid PrDP number";
+    }
+
+    return null;
+  }
+
+  // ---------------- DROPDOWN / SELECTION ----------------
+  static String? selection(String? value, {String field = "Selection"}) {
+    if (value == null || value.isEmpty) {
+      return "$field is required";
+    }
     return null;
   }
 
@@ -137,6 +194,19 @@ class AppValidators {
     if (value == null || value.trim().isEmpty) {
       return "$field is required";
     }
+    return null;
+  }
+
+  // ---------------- NUMERIC ONLY ----------------
+  static String? numeric(String? value, {String field = "Value"}) {
+    if (value == null || value.trim().isEmpty) {
+      return "$field is required";
+    }
+
+    if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+      return "$field must be numeric";
+    }
+
     return null;
   }
 }

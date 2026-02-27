@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
-import '../../export.dart';
+import '../../../constants/validation_regx.dart';
+import '../../../export.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -67,15 +69,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 borderColor: AppColors.electricTeal,
                 textColor: AppColors.mediumGray,
                 keyboardType: TextInputType.emailAddress,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Email required";
-                  }
-                  if (!value.contains('@')) {
-                    return "Enter valid email";
-                  }
-                  return null;
-                },
+                validator: AppValidators.email,
               ),
 
               const SizedBox(height: 40),
@@ -145,12 +139,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   borderColor: AppColors.electricTeal,
                   textColor: AppColors.pureWhite,
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => VerificationScreen(),
-                      ),
-                    );
+                    context.push("/otp-registration");
                   },
                 ),
               ),

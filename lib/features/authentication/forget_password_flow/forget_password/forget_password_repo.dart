@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../constants/api_url.dart';
-import '../../../constants/dio.dart';
+import '../../../../constants/api_url.dart';
+import '../../../../constants/dio.dart';
 import 'forget_password_modal.dart';
 
 final forgotPasswordRepositoryProvider = Provider<ForgotPasswordRepository>((ref) {

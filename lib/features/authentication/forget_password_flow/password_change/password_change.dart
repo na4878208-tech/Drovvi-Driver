@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../constants/validation_regx.dart';
-import '../../export.dart';
+import '../../../../constants/validation_regx.dart';
+import '../../../../export.dart';
 
-class CreatePasswordScreen extends StatefulWidget {
-  const CreatePasswordScreen({super.key});
+class PasswordChangeScreen extends StatefulWidget {
+  const PasswordChangeScreen({super.key});
 
   @override
-  State<CreatePasswordScreen> createState() => _CreatePasswordScreenState();
+  State<PasswordChangeScreen> createState() => _PasswordChangeScreenState();
 }
 
-class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
+class _PasswordChangeScreenState extends State<PasswordChangeScreen> {
   final _formKey = GlobalKey<FormState>(); // 🔥 ADD THIS
 
   final passwordFocus = FocusNode();
@@ -88,7 +88,7 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
                 const SizedBox(height: 40),
 
                 CustomText(
-                  txt: "Create New Password",
+                  txt: "Password Change",
                   color: AppColors.electricTeal,
                   fontSize: 25,
                   fontWeight: FontWeight.w700,
@@ -98,7 +98,7 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
 
                 CustomText(
                   txt:
-                      "Set your new password so you can Log In\nand access Resolve",
+                      "Set your password so you can Log In\nand access Resolve",
                   align: TextAlign.center,
                   color: AppColors.mediumGray,
                   fontSize: 14,
