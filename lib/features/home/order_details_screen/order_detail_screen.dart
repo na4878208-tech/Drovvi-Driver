@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:logisticdriverapp/constants/bottom_show.dart';
 import '../../../export.dart';
 import '../Map/map_button_process/skip_stop/skip_stop_screen.dart';
 import '../main_screens/home_screen/home_controller.dart';
@@ -1571,9 +1572,11 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
             status == "delivered")) {
       if (isDriverOffDuty()) {
         return mainButton("Start Stop", () async {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("You are currently off duty")),
-          );
+          // ScaffoldMessenger.of(context).showSnackBar(
+          //   const SnackBar(content: Text("You are currently off duty")),
+          // );
+
+          AppSnackBar.showError(context, "You are currently off duty");
         });
       }
 
@@ -1623,9 +1626,11 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
             },
           );
         } catch (e) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(e.toString())));
+          // ScaffoldMessenger.of(
+          //   context,
+          // ).showSnackBar(SnackBar(content: Text(e.toString())));
+
+          AppSnackBar.showError(context, e.toString());
         }
       });
     }
@@ -1675,9 +1680,11 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
         /// 🔴 OFF DUTY CHECK
         if (isDriverOffDuty()) {
           return mainButton("Start To Picked_Up", () async {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("You are currently off duty")),
-            );
+            // ScaffoldMessenger.of(context).showSnackBar(
+            //   const SnackBar(content: Text("You are currently off duty")),
+            // );
+
+            AppSnackBar.showError(context, "You are currently off duty");
           });
         }
 
@@ -1689,15 +1696,14 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                 .read(startOrderControllerProvider.notifier)
                 .startOrder(order.id);
 
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(res.message)));
+            // ScaffoldMessenger.of(
+            //   context,
+            // ).showSnackBar(SnackBar(content: Text(res.message)));
+            AppSnackBar.showSuccess(context, res.message);
 
             context.push("/map", extra: {"order": order, "type": "pickup"});
           } catch (e) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(e.toString())));
+            AppSnackBar.showError(context, e.toString());
           }
         });
 
@@ -1762,27 +1768,103 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
   }
 
   Widget _buildShimmer() {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        children: List.generate(5, (index) {
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 16),
-            child: Shimmer.fromColors(
-              baseColor: Colors.grey.shade300,
-              highlightColor: Colors.grey.shade100,
-              child: Container(
-                width: double.infinity,
-                height: 80,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                ),
+    return Shimmer.fromColors(
+      baseColor: Colors.grey.shade300,
+      highlightColor: Colors.grey.shade100,
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            /// 🔹 ORDER HEADER
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _shimmerBox(width: 140, height: 22, radius: 8),
+                _shimmerBox(width: 90, height: 28, radius: 20),
+              ],
+            ),
+            const SizedBox(height: 20),
+
+            /// 🔹 CUSTOMER CARD
+            _shimmerCard(
+              child: Row(
+                children: [
+                  _shimmerCircle(56),
+                  const SizedBox(width: 16),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _shimmerBox(width: 140, height: 16),
+                      const SizedBox(height: 8),
+                      _shimmerBox(width: 110, height: 14),
+                    ],
+                  ),
+                ],
               ),
             ),
-          );
-        }),
+
+            const SizedBox(height: 20),
+
+            /// 🔹 TIMELINE CARD
+            _shimmerCard(height: 220),
+
+            const SizedBox(height: 20),
+
+            /// 🔹 PACKAGE CARD
+            _shimmerCard(height: 180),
+
+            const SizedBox(height: 20),
+
+            /// 🔹 PAYMENT CARD
+            _shimmerCard(height: 150),
+
+            const SizedBox(height: 30),
+
+            /// 🔹 ACTION BUTTON
+            _shimmerBox(width: double.infinity, height: 55, radius: 30),
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget _shimmerBox({
+    double width = double.infinity,
+    required double height,
+    double radius = 10,
+  }) {
+    return Container(
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(radius),
+      ),
+    );
+  }
+
+  Widget _shimmerCircle(double size) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        shape: BoxShape.circle,
+      ),
+    );
+  }
+
+  Widget _shimmerCard({Widget? child, double? height}) {
+    return Container(
+      width: double.infinity,
+      height: height,
+      padding: height == null ? const EdgeInsets.all(16) : null,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: child,
     );
   }
 }

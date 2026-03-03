@@ -2,10 +2,157 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:logisticdriverapp/constants/bottom_show.dart';
 
 import 'my_order_controller.dart';
 import 'my_order_modal.dart';
 import '../../../../export.dart'; // AppColors & CustomText
+
+import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
+import '../../../../export.dart';
+
+class MyOrdersShimmer extends StatelessWidget {
+  const MyOrdersShimmer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        // _filterShimmer(),
+        Expanded(
+          child: ListView.builder(
+            padding: const EdgeInsets.all(12),
+            itemCount: 5,
+            itemBuilder: (_, __) => _orderCardShimmer(),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _filterShimmer() {
+    return SizedBox(
+      height: 60,
+      child: ListView.separated(
+        padding: const EdgeInsets.all(12),
+        scrollDirection: Axis.horizontal,
+        itemBuilder: (_, __) => Shimmer.fromColors(
+          baseColor: Colors.grey.shade300,
+          highlightColor: Colors.grey.shade100,
+          child: Container(
+            width: 80,
+            height: 36,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+            ),
+          ),
+        ),
+        separatorBuilder: (_, __) => const SizedBox(width: 8),
+        itemCount: 6,
+      ),
+    );
+  }
+
+  Widget _orderCardShimmer() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Shimmer.fromColors(
+        baseColor: Colors.grey.shade300,
+        highlightColor: Colors.grey.shade100,
+        child: Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(18),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              /// Header
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _box(width: 120, height: 16),
+                  _box(width: 70, height: 20, radius: 20),
+                ],
+              ),
+
+              const SizedBox(height: 12),
+
+              /// Customer & Product
+              Row(
+                children: [
+                  _circle(26),
+                  const SizedBox(width: 6),
+                  _box(width: 100, height: 14),
+                  const Spacer(),
+                  _circle(26),
+                  const SizedBox(width: 6),
+                  _box(width: 80, height: 14),
+                ],
+              ),
+
+              const SizedBox(height: 10),
+
+              /// Meta Row
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: List.generate(
+                  4,
+                  (index) => _box(width: 60, height: 12),
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              /// Price & Date
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _box(width: 80, height: 18),
+                  _box(width: 110, height: 12),
+                ],
+              ),
+
+              const SizedBox(height: 14),
+
+              /// Button
+              _box(width: double.infinity, height: 44, radius: 14),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _box({
+    required double width,
+    required double height,
+    double radius = 6,
+  }) {
+    return Container(
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(radius),
+      ),
+    );
+  }
+
+  Widget _circle(double size) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        shape: BoxShape.circle,
+      ),
+    );
+  }
+}
 
 class MyOrdersScreen extends ConsumerStatefulWidget {
   const MyOrdersScreen({super.key});
@@ -64,7 +211,8 @@ class _MyOrdersScreenState extends ConsumerState<MyOrdersScreen> {
                   ),
                 );
               },
-              loading: () => _buildLoadingState(),
+              // loading: () => _buildLoadingState(),
+              loading: () => const MyOrdersShimmer(),
               error: (err, st) => _buildErrorState(err.toString()),
             ),
           ),
@@ -353,9 +501,11 @@ class _MyOrdersScreenState extends ConsumerState<MyOrdersScreen> {
                 final id = order.id;
 
                 if (id == 0) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Invalid order ID")),
-                  );
+                  // ScaffoldMessenger.of(context).showSnackBar(
+                  //   const SnackBar(content: Text("Invalid order ID")),
+                  // );
+
+                  AppSnackBar.showError(context, "Invalid order ID");
                   return;
                 }
 

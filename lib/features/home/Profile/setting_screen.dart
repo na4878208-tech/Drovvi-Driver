@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:logisticdriverapp/constants/bottom_show.dart';
+import 'package:logisticdriverapp/features/home/Profile/logout/logout_controller.dart';
 import '../../../constants/colors.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -131,7 +134,7 @@ class _SettingScreenState extends State<SettingScreen> {
         toolbarHeight: 45,
         leading: IconButton(
           onPressed: () => context.go("/profile"),
-          icon: const Icon(Icons.arrow_back_ios_new, size: 18),
+          icon: const Icon(Icons.arrow_back, size: 18),
         ),
         backgroundColor: AppColors.electricTeal,
         foregroundColor: AppColors.pureWhite,
@@ -151,9 +154,9 @@ class _SettingScreenState extends State<SettingScreen> {
                     context.push("/notifications");
                   },
                 ),
-                _buildSettingTile(Icons.language, "Language", () {
-                  showCenteredLanguageModal(context);
-                }),
+                // _buildSettingTile(Icons.language, "Language", () {
+                //   showCenteredLanguageModal(context);
+                // }),
               ],
             ),
 
@@ -343,40 +346,76 @@ class _SettingScreenState extends State<SettingScreen> {
     );
   }
 
-  // ⭐ Logout Tile
   Widget _buildLogoutTile() {
-    return InkWell(
-      onTap: () {
-        showCustomModal(
-          context: context,
-          title: "Sign Out ?",
-          subtitle: "Are you sure you want to Sign out?",
-          confirmText: "Sign Out",
-          onConfirm: () {
-            context.pop();
-            // Yahan logout ka logic likhna
-            print("User Logged Out");
+    return Consumer(
+      builder: (context, ref, _) {
+        final logoutState = ref.watch(logoutControllerProvider);
+        final controller = ref.read(logoutControllerProvider.notifier);
+
+        return InkWell(
+          onTap: () {
+            showCustomModal(
+              context: context,
+              title: "Sign Out ?",
+              subtitle: "Are you sure you want to Sign out?",
+              confirmText: "Sign Out",
+              onConfirm: () async {
+                context.pop();
+
+                try {
+                  await controller.logout();
+
+                  context.go("/login");
+
+                  // ScaffoldMessenger.of(context).showSnackBar(
+                  //   const SnackBar(
+                  //     content: Text("Successfully logged out"),
+                  //     backgroundColor: Colors.green,
+                  //   ),
+                  // );
+
+                  AppSnackBar.showSuccess(context, "Successfully logged out");
+                } catch (e) {
+                  // ScaffoldMessenger.of(context).showSnackBar(
+                  //   SnackBar(
+                  //     content: Text(e.toString()),
+                  //     backgroundColor: Colors.red,
+                  //   ),
+                  // );
+
+                  AppSnackBar.showError(context, e.toString());
+                }
+              },
+            );
           },
+          borderRadius: BorderRadius.circular(12),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            child: Row(
+              children: [
+                const Icon(Icons.logout, color: Colors.red, size: 26),
+                const SizedBox(width: 12),
+                const Text(
+                  "Logout",
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.red,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                if (logoutState.isLoading) ...[
+                  const SizedBox(width: 10),
+                  const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                ],
+              ],
+            ),
+          ),
         );
       },
-      borderRadius: BorderRadius.circular(12),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        child: Row(
-          children: const [
-            Icon(Icons.logout, color: Colors.red, size: 26),
-            SizedBox(width: 12),
-            Text(
-              "Logout",
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.red,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

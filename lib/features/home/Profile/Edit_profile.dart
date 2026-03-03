@@ -84,7 +84,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           onPressed: () {
             context.go("/profile");
           },
-          icon: const Icon(Icons.arrow_back_ios_new, size: 18),
+          icon: const Icon(Icons.arrow_back, size: 18),
         ),
         backgroundColor: AppColors.electricTeal,
         foregroundColor: AppColors.pureWhite,

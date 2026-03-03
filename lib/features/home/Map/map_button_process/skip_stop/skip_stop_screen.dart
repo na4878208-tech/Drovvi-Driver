@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:logisticdriverapp/constants/bottom_show.dart';
 import '../../../../../constants/local_storage.dart';
 import '../../../../../export.dart';
 import '../../../order_details_screen/order_detail_modal.dart';
@@ -37,9 +38,14 @@ class _SkipStopScreenState extends ConsumerState<SkipStopScreen> {
 
       if (token == null || token.isEmpty) {
         // Token missing, handle login or error
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Authorization token not found")),
+
+        AppSnackBar.showError(
+          context,
+          "Authorization token not found. Please login again.",
         );
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   const SnackBar(content: Text("Authorization token not found")),
+        // );
         return;
       }
 

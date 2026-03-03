@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:logisticdriverapp/constants/bottom_show.dart';
 import '../../export.dart';
+
 class ConformOrderScreen extends StatefulWidget {
   const ConformOrderScreen({super.key});
 
@@ -176,9 +178,11 @@ class _ConformOrderScreenState extends State<ConformOrderScreen> {
                   GestureDetector(
                     onTap: () {
                       // TODO: call resend OTP API
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('OTP resent')),
-                      );
+                      // ScaffoldMessenger.of(context).showSnackBar(
+                      //   const SnackBar(content: Text('OTP resent')),
+                      // );
+
+                      AppSnackBar.showError(context, "OTP resent");
                     },
                     child: Text(
                       "Resend OTP",
@@ -295,10 +299,15 @@ class _ConformOrderScreenState extends State<ConformOrderScreen> {
                           ),
                           onPressed: () {
                             setState(() => hasPhoto = true);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("Photo added (simulated)"),
-                              ),
+                            // ScaffoldMessenger.of(context).showSnackBar(
+                            //   const SnackBar(
+                            //     content: Text("Photo added (simulated)"),
+                            //   ),
+                            // );
+
+                            AppSnackBar.showError(
+                              context,
+                              "Photo added (simulated)",
                             );
                           },
                           icon: const Icon(Icons.camera_alt),

@@ -50,7 +50,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
           ),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: AppColors.pureWhite),
+          icon: const Icon(Icons.arrow_back, color: AppColors.pureWhite),
           onPressed: () => context.pop(),
         ),
       ),

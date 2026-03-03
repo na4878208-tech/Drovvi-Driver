@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:logisticdriverapp/constants/bottom_show.dart';
+import 'package:logisticdriverapp/features/home/Map/resentotp_stop/ResendOtpController.dart';
 import '../../../export.dart';
 import '../order_details_screen/button_process/multi_stop_button/stop_arrived/stop_action_controller.dart';
 import '../order_details_screen/button_process/multi_stop_button/stop_arrived/stop_action_model.dart';
@@ -99,9 +101,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     try {
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Please enable location services")),
-        );
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   const SnackBar(content: Text("Please enable location services")),
+        // );
+
+        AppSnackBar.showError(context, "Please enable location services");
         return;
       }
 
@@ -109,19 +113,26 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Location permission denied")),
-          );
+          // ScaffoldMessenger.of(context).showSnackBar(
+          //   const SnackBar(content: Text("Location permission denied")),
+          // );
+
+          AppSnackBar.showError(context, "Location permission denied");
           return;
         }
       }
       if (permission == LocationPermission.deniedForever) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              "Location permissions permanently denied. Enable in settings.",
-            ),
-          ),
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   const SnackBar(
+        //     content: Text(
+        //       "Location permissions permanently denied. Enable in settings.",
+        //     ),
+        //   ),
+        // );
+
+        AppSnackBar.showSuccess(
+          context,
+          "Location permissions permanently denied. Enable in settings.",
         );
         await Geolocator.openAppSettings();
         return;
@@ -140,9 +151,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     } catch (e) {
       debugPrint("Location Error: $e");
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Error fetching location")),
-        );
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   const SnackBar(content: Text("Error fetching location")),
+        // );
+
+        AppSnackBar.showError(context, "Error fetching location");
       }
     }
   }
@@ -208,9 +221,10 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         CameraUpdate.newLatLngZoom(_driverLocation!, 15),
       );
     } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Location unavailable")));
+      AppSnackBar.showError(context, "Driver location unavailable");
+      // ScaffoldMessenger.of(
+      //   context,
+      // ).showSnackBar(const SnackBar(content: Text("Location unavailable")));
     }
   }
 
@@ -274,9 +288,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           // 👉 Middle Stop → location check required
           if (!isFirst && !isLast) {
             if (_driverLocation == null) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("Driver location unavailable")),
-              );
+              AppSnackBar.showError(context, "Driver location unavailable");
               return;
             }
 
@@ -288,13 +300,17 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             );
 
             if (distance > 100) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text(
-                    "You must be within 100 meters to complete this stop",
-                  ),
-                ),
+              AppSnackBar.showSuccess(
+                context,
+                "You must be within 100 meters to complete this stop",
               );
+              // ScaffoldMessenger.of(context).showSnackBar(
+              //   const SnackBar(
+              //     content: Text(
+              //       "You must be within 100 meters to complete this stop",
+              //     ),
+              //   ),
+              // );
               return;
             }
           }
@@ -304,9 +320,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             final otp = _otp.trim();
 
             if (otp.length != 4) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("Enter valid 4-digit OTP")),
-              );
+              // ScaffoldMessenger.of(context).showSnackBar(
+              //   const SnackBar(content: Text("Enter valid 4-digit OTP")),
+              // );
+
+              AppSnackBar.showWarning(context, "Enter valid 4-digit OTP");
               return;
             }
 
@@ -329,9 +347,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
           if (!mounted) return;
 
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(res.message)));
+          // ScaffoldMessenger.of(
+          //   context,
+          // ).showSnackBar(SnackBar(content: Text(res.message)));
+
+          AppSnackBar.showError(context, res.message);
 
           // ✅ Replace screen instead of push
           context.go("/order-details", extra: widget.orderId);
@@ -340,18 +360,22 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         }
 
         if (!mounted) return;
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(res.message)));
+        // ScaffoldMessenger.of(
+        //   context,
+        // ).showSnackBar(SnackBar(content: Text(res.message)));
+
+        AppSnackBar.showError(context, res.message);
 
         // Refresh after arrive
         // ignore: unused_result
         ref.refresh(orderDetailsControllerProvider(order.id));
       } catch (e) {
         if (!mounted) return;
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text("Error: $e")));
+
+        AppSnackBar.showError(context, "Error: $e");
+        // ScaffoldMessenger.of(
+        //   context,
+        // ).showSnackBar(SnackBar(content: Text("Error: $e")));
       } finally {
         if (mounted) setState(() => _isProcessing = false);
       }
@@ -371,9 +395,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     final otp = _otp.trim();
 
     if (otp.length != 4) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please enter a valid 4-digit OTP")),
-      );
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   const SnackBar(content: Text("Please enter a valid 4-digit OTP")),
+      // );
+      AppSnackBar.showWarning(context, "Please enter a valid 4-digit OTP");
+
       return;
     }
 
@@ -386,9 +412,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
       if (!mounted) return;
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Pickup Confirmed ✅")));
+      AppSnackBar.showSuccess(context, "Pickup Confirmed ✅");
+      //   context,
+      // ).showSnackBar(const SnackBar(content: Text("Pickup Confirmed ✅")));
 
       // ✅ PASS ORDER ID PROPERLY
       context.push(
@@ -397,9 +423,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       );
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Pickup Failed: $e")));
+      AppSnackBar.showError(context, "Pickup Failed: $e");
+      //   context,
+      // ).showSnackBar(SnackBar(content: Text("Pickup Failed: $e")));
     } finally {
       if (mounted) setState(() => _isProcessing = false);
     }
@@ -408,9 +434,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   void _confirmDelivery() async {
     final otp = _otp.trim();
     if (otp.length != 4) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please enter a valid 4-digit OTP")),
-      );
+      AppSnackBar.showWarning(context, "Please enter a valid 4-digit OTP");
       return;
     }
 
@@ -426,9 +450,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
       if (!mounted) return;
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Delivery Confirmed ✅")));
+      AppSnackBar.showSuccess(context, "Delivery Confirmed ✅");
+      //   context,
+      // ).showSnackBar(const SnackBar(content: Text("Delivery Confirmed ✅")));
 
       Navigator.pushReplacement(
         context,
@@ -438,9 +462,10 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       );
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Delivery Failed: $e")));
+      AppSnackBar.showError(context, "Delivery Failed: $e");
+      // ScaffoldMessenger.of(
+      //   context,
+      // ).showSnackBar(SnackBar(content: Text("Delivery Failed: $e")));
     } finally {
       if (mounted) setState(() => _isProcessing = false);
     }
@@ -606,31 +631,132 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                                     Icons.lock_outline,
                                   ),
                                   const SizedBox(height: 10),
-                                  PinCodeTextField(
-                                    appContext: context,
-                                    length: 4,
-                                    keyboardType: TextInputType.number,
-                                    animationType: AnimationType.fade,
-                                    enableActiveFill: true,
-                                    pinTheme: PinTheme(
-                                      shape: PinCodeFieldShape.box,
-                                      borderRadius: BorderRadius.circular(10),
-                                      fieldHeight: 48,
-                                      fieldWidth: 44,
-                                      inactiveColor: AppColors.electricTeal
-                                          .withOpacity(0.3),
-                                      selectedColor: AppColors.electricTeal,
-                                      activeColor: AppColors.electricTeal,
-                                      activeFillColor: Colors.white,
-                                      inactiveFillColor: Colors.white,
-                                      selectedFillColor: Colors.white,
-                                    ),
-                                    onChanged: (value) {
-                                      setState(() {
-                                        _otp = value;
-                                        _isOtpFilled = value.length == 4;
-                                      });
-                                    },
+                                  Column(
+                                    children: [
+                                      PinCodeTextField(
+                                        appContext: context,
+                                        length: 4,
+                                        keyboardType: TextInputType.number,
+                                        animationType: AnimationType.fade,
+                                        enableActiveFill: true,
+                                        pinTheme: PinTheme(
+                                          shape: PinCodeFieldShape.box,
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                          fieldHeight: 48,
+                                          fieldWidth: 44,
+                                          inactiveColor: AppColors.electricTeal
+                                              .withOpacity(0.3),
+                                          selectedColor: AppColors.electricTeal,
+                                          activeColor: AppColors.electricTeal,
+                                          activeFillColor: Colors.white,
+                                          inactiveFillColor: Colors.white,
+                                          selectedFillColor: Colors.white,
+                                        ),
+                                        onChanged: (value) {
+                                          setState(() {
+                                            _otp = value;
+                                            _isOtpFilled = value.length == 4;
+                                          });
+                                        },
+                                      ),
+
+                                      // CustomText(txt:"resent code"),
+                                      Consumer(
+                                        builder: (context, ref, _) {
+                                          final resendState = ref.watch(
+                                            resendOtpControllerProvider,
+                                          );
+
+                                          return Column(
+                                            children: [
+                                              GestureDetector(
+                                                onTap:
+                                                    resendState is AsyncLoading
+                                                    ? null
+                                                    : () async {
+                                                        final activeStop =
+                                                            getActiveStop(
+                                                              order.stops,
+                                                            );
+                                                        if (activeStop == null)
+                                                          return;
+
+                                                        await ref
+                                                            .read(
+                                                              resendOtpControllerProvider
+                                                                  .notifier,
+                                                            )
+                                                            .resendOtp(
+                                                              orderId: order.id,
+                                                              stopId:
+                                                                  activeStop.id,
+                                                            );
+
+                                                        final updatedState = ref
+                                                            .read(
+                                                              resendOtpControllerProvider,
+                                                            );
+
+                                                        updatedState.whenOrNull(
+                                                          data: (_) {
+                                                            AppSnackBar.showSuccess(
+                                                              context,
+                                                              "OTP resent successfully",
+                                                            );
+
+                                                            // ScaffoldMessenger.of(
+                                                            //   context,
+                                                            // ).showSnackBar(
+                                                            //   const SnackBar(
+                                                            //     content: Text(
+                                                            //       "OTP resent successfully",
+                                                            //     ),
+                                                            //   ),
+                                                            // );
+                                                          },
+                                                          error: (e, _) {
+                                                            AppSnackBar.showError(
+                                                              context,
+                                                              e.toString(),
+                                                            );
+                                                            // ScaffoldMessenger.of(
+                                                            //   context,
+                                                            // ).showSnackBar(
+                                                            //   SnackBar(
+                                                            //     content: Text(
+                                                            //       e.toString(),
+                                                            //     ),
+                                                            //   ),
+                                                            // );
+                                                            print(
+                                                              "Resend OTP error: $e",
+                                                            );
+                                                          },
+                                                        );
+                                                      },
+                                                child:
+                                                    resendState is AsyncLoading
+                                                    ? const Padding(
+                                                        padding: EdgeInsets.all(
+                                                          8.0,
+                                                        ),
+                                                        child:
+                                                            CircularProgressIndicator(),
+                                                      )
+                                                    : CustomText(
+                                                        fontSize: 14,
+                                                        txt: "Resend Code",
+                                                        color: AppColors
+                                                            .electricTeal,
+                                                      ),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      ),
+                                    ],
                                   ),
                                 ],
                                 const SizedBox(height: 16),

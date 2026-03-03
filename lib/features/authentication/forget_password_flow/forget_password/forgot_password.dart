@@ -140,6 +140,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:logisticdriverapp/common_widgets/custom_text.dart';
+import 'package:logisticdriverapp/constants/bottom_show.dart';
+import 'package:logisticdriverapp/export.dart';
 
 import '../../../../common_widgets/cuntom_textfield.dart';
 import '../../../../common_widgets/custom_button.dart';
@@ -195,23 +198,42 @@ class _ForgotPasswordState extends ConsumerState<ForgotPassword> {
         state.when(
           data: (data) {
             if (data != null && data.success) {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text(data.message)));
+              // ScaffoldMessenger.of(
+              //   context,
+              // ).showSnackBar(SnackBar(content: Text(data.message)));
+
+              AppSnackBar.showSuccess(context, data.message);
               context.go('/otp-forget'); // Navigate on success
             }
           },
           loading: () {},
           error: (e, st) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(e.toString())));
+            // ScaffoldMessenger.of(
+            //   context,
+            // ).showSnackBar(SnackBar(content: Text(e.toString())));
+
+            AppSnackBar.showError(context, e.toString());
           },
         );
       },
     );
 
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: TextButton(
+          onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => Login()),
+          ),
+          child: CustomText(
+            txt: "Back",
+            color: AppColors.electricTeal,
+            fontSize: 14,
+          ),
+        ),
+      ),
       backgroundColor: AppColors.lightGrayBackground,
       body: SafeArea(
         child: SingleChildScrollView(

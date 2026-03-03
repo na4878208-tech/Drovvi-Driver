@@ -19,7 +19,7 @@ class HelpSupportScreen extends StatelessWidget {
         toolbarHeight: 45,
         leading: IconButton(
           onPressed: () => context.pop(),
-          icon: const Icon(Icons.arrow_back_ios, size: 18),
+          icon: const Icon(Icons.arrow_back, size: 18),
         ),
         backgroundColor: AppColors.electricTeal,
         foregroundColor: AppColors.pureWhite,

@@ -5,6 +5,131 @@ import 'earning_model.dart';
 import 'earning_controller.dart';
 import 'package:intl/intl.dart';
 
+import 'package:shimmer/shimmer.dart';
+
+class EarningsShimmer extends StatelessWidget {
+  const EarningsShimmer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _summaryShimmer(),
+          const SizedBox(height: 24),
+          _sectionTitleShimmer(),
+          const SizedBox(height: 12),
+          ...List.generate(4, (index) => _earningCardShimmer()),
+        ],
+      ),
+    );
+  }
+
+  Widget _summaryShimmer() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey.shade300,
+      highlightColor: Colors.grey.shade100,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _box(height: 20, width: 120),
+            const SizedBox(height: 20),
+            ...List.generate(
+              5,
+              (index) => Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _box(height: 14, width: 100),
+                    _box(height: 14, width: 60),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                _box(height: 28, width: 100, radius: 12),
+                const SizedBox(width: 8),
+                _box(height: 28, width: 100, radius: 12),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _sectionTitleShimmer() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey.shade300,
+      highlightColor: Colors.grey.shade100,
+      child: _box(height: 22, width: 160),
+    );
+  }
+
+  Widget _earningCardShimmer() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Shimmer.fromColors(
+        baseColor: Colors.grey.shade300,
+        highlightColor: Colors.grey.shade100,
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(18),
+          ),
+          child: Row(
+            children: [
+              _box(height: 48, width: 48, radius: 24),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _box(height: 14, width: 120),
+                    const SizedBox(height: 8),
+                    _box(height: 14, width: 80),
+                    const SizedBox(height: 8),
+                    _box(height: 12, width: 160),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              _box(height: 24, width: 60, radius: 8),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _box({
+    required double height,
+    required double width,
+    double radius = 6,
+  }) {
+    return Container(
+      height: height,
+      width: width,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(radius),
+      ),
+    );
+  }
+}
+
 class EarningsScreen extends ConsumerWidget {
   const EarningsScreen({super.key});
 
@@ -26,33 +151,59 @@ class EarningsScreen extends ConsumerWidget {
         foregroundColor: AppColors.pureWhite,
         elevation: 0,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // ================= SUMMARY CARD =================
-            summaryAsync.when(
-              data: (summary) => _summaryCard(summary),
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (e, st) => Center(child: Text("Failed to load summary")),
-            ),
-            const SizedBox(height: 24),
 
-            // ================= RECENT EARNINGS =================
-            _sectionTitle("Recent Earnings"),
-            earningsAsync.when(
-              data: (list) => list.isEmpty
-                  ? const Center(child: Text("No earnings yet"))
-                  : Column(
-                      children: list.map((e) => _earningCard(e)).toList(),
-                    ),
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (e, st) => Center(child: Text("Failed to load earnings")),
+      body: earningsAsync.isLoading || summaryAsync.isLoading
+          ? const EarningsShimmer()
+          : SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  summaryAsync.when(
+                    data: (summary) => _summaryCard(summary),
+                    loading: () => const SizedBox(),
+                    error: (e, st) => const Text("Failed to load summary"),
+                  ),
+                  const SizedBox(height: 24),
+                  _sectionTitle("Recent Earnings"),
+                  earningsAsync.when(
+                    data: (list) => list.isEmpty
+                        ? const Center(child: Text("No earnings yet"))
+                        : Column(
+                            children: list.map((e) => _earningCard(e)).toList(),
+                          ),
+                    loading: () => const SizedBox(),
+                    error: (e, st) => const Text("Failed to load earnings"),
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
-      ),
+
+      // body: SingleChildScrollView(
+      //   padding: const EdgeInsets.all(16),
+      //   child: Column(
+      //     crossAxisAlignment: CrossAxisAlignment.start,
+      //     children: [
+      //       // ================= SUMMARY CARD =================
+      //       summaryAsync.when(
+      //         data: (summary) => _summaryCard(summary),
+      //         loading: () => const Center(child: CircularProgressIndicator()),
+      //         error: (e, st) => Center(child: Text("Failed to load summary")),
+      //       ),
+      //       const SizedBox(height: 24),
+
+      //       // ================= RECENT EARNINGS =================
+      //       _sectionTitle("Recent Earnings"),
+      //       earningsAsync.when(
+      //         data: (list) => list.isEmpty
+      //             ? const Center(child: Text("No earnings yet"))
+      //             : Column(children: list.map((e) => _earningCard(e)).toList()),
+      //         loading: () => const Center(child: CircularProgressIndicator()),
+      //         error: (e, st) => Center(child: Text("Failed to load earnings")),
+      //       ),
+      //     ],
+      //   ),
+      // ),
     );
   }
 
@@ -94,15 +245,31 @@ class EarningsScreen extends ConsumerWidget {
         children: [
           const Text(
             "This Month",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
           ),
           const SizedBox(height: 16),
           _summaryRow("Total Trips", summary.totalTrips.toString()),
-          _summaryRow("Base Earnings", "\$${summary.baseEarnings.toStringAsFixed(2)}"),
-          _summaryRow("Commission", "\$${summary.commissionEarnings.toStringAsFixed(2)}"),
-          _summaryRow("Fuel Allowance", "\$${summary.fuelAllowance.toStringAsFixed(2)}"),
-          _summaryRow("Total Earnings", "\$${summary.totalEarnings.toStringAsFixed(2)}",
-              isBold: true),
+          _summaryRow(
+            "Base Earnings",
+            "\$${summary.baseEarnings.toStringAsFixed(2)}",
+          ),
+          _summaryRow(
+            "Commission",
+            "\$${summary.commissionEarnings.toStringAsFixed(2)}",
+          ),
+          _summaryRow(
+            "Fuel Allowance",
+            "\$${summary.fuelAllowance.toStringAsFixed(2)}",
+          ),
+          _summaryRow(
+            "Total Earnings",
+            "\$${summary.totalEarnings.toStringAsFixed(2)}",
+            isBold: true,
+          ),
           const SizedBox(height: 8),
           Row(
             children: [
@@ -122,7 +289,13 @@ class EarningsScreen extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: const TextStyle(color: Colors.white70, fontWeight: FontWeight.w500)),
+          Text(
+            label,
+            style: const TextStyle(
+              color: Colors.white70,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
           Text(
             value,
             style: TextStyle(
@@ -147,7 +320,10 @@ class EarningsScreen extends ConsumerWidget {
         ),
         child: Text(
           "$label: \$${amount.toStringAsFixed(2)}",
-          style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
       ),
     );
@@ -155,7 +331,9 @@ class EarningsScreen extends ConsumerWidget {
 
   // ================= EARNING CARD =================
   Widget _earningCard(EarningModel earning) {
-    final dateFormatted = DateFormat("MMM dd, yyyy hh:mm a").format(earning.earnedAt.toLocal());
+    final dateFormatted = DateFormat(
+      "MMM dd, yyyy hh:mm a",
+    ).format(earning.earnedAt.toLocal());
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.only(bottom: 12),
@@ -180,7 +358,10 @@ class EarningsScreen extends ConsumerWidget {
               color: AppColors.lightGrayBackground,
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.receipt_long, color: AppColors.electricTeal),
+            child: const Icon(
+              Icons.receipt_long,
+              color: AppColors.electricTeal,
+            ),
           ),
           const SizedBox(width: 16),
           // Details
@@ -188,8 +369,10 @@ class EarningsScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Order #${earning.orderNumber}",
-                    style: const TextStyle(fontWeight: FontWeight.bold)),
+                Text(
+                  "Order #${earning.orderNumber}",
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
                 const SizedBox(height: 4),
                 Text(
                   "Earnings: \$${earning.totalEarnings.toStringAsFixed(2)}",
@@ -200,10 +383,13 @@ class EarningsScreen extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                
+
                 Text(
                   "Earned at: $dateFormatted",
-                  style: const TextStyle(color: AppColors.mediumGray, fontSize: 12),
+                  style: const TextStyle(
+                    color: AppColors.mediumGray,
+                    fontSize: 12,
+                  ),
                 ),
               ],
             ),
@@ -212,12 +398,18 @@ class EarningsScreen extends ConsumerWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: earning.status == "paid" ? Colors.greenAccent.shade400 : Colors.orangeAccent,
+              color: earning.status == "paid"
+                  ? Colors.greenAccent.shade400
+                  : Colors.orangeAccent,
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
               earning.status.toUpperCase(),
-              style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 12),
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                fontSize: 12,
+              ),
             ),
           ),
         ],

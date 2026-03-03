@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:logisticdriverapp/common_widgets/appbar_widget.dart';
+import 'package:logisticdriverapp/constants/bottom_show.dart';
 import 'package:logisticdriverapp/constants/colors.dart';
 import 'package:logisticdriverapp/features/home/main_screens/my_order_screen/my_order_screen.dart';
 
@@ -11,6 +12,231 @@ import '../my_order_screen/my_order_controller.dart';
 import '../my_order_screen/my_order_modal.dart';
 import 'home_controller.dart';
 import 'home_modal.dart';
+
+import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:logisticdriverapp/constants/colors.dart';
+
+class CurrentScreenShimmer extends StatelessWidget {
+  const CurrentScreenShimmer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.lightGrayBackground,
+      body: Shimmer.fromColors(
+        baseColor: Colors.grey.shade300,
+        highlightColor: Colors.grey.shade100,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _driverHeader(),
+              const SizedBox(height: 20),
+              _infoCard(),
+              const SizedBox(height: 16),
+              _infoCard(),
+              const SizedBox(height: 16),
+              _infoCard(),
+              const SizedBox(height: 20),
+              _statsSection(),
+              const SizedBox(height: 20),
+              _ordersSection(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ================= DRIVER HEADER =================
+  Widget _driverHeader() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(14),
+        color: Colors.white,
+      ),
+      child: Row(
+        children: [
+          _circle(56),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _box(width: 160, height: 16),
+                const SizedBox(height: 8),
+                _box(width: 120, height: 12),
+              ],
+            ),
+          ),
+          _box(width: 40, height: 20, radius: 20),
+        ],
+      ),
+    );
+  }
+
+  // ================= INFO CARD (Company/Depot/Vehicle) =================
+  Widget _infoCard() {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: Colors.white,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _box(width: 120, height: 18),
+          const SizedBox(height: 16),
+          ...List.generate(
+            4,
+            (index) => Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: Row(
+                children: [
+                  _circle(30),
+                  const SizedBox(width: 12),
+                  Expanded(child: _box(height: 14)),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ================= STATS SECTION =================
+  Widget _statsSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _box(width: 140, height: 18),
+        const SizedBox(height: 14),
+        Row(
+          children: [
+            Expanded(child: _statCard()),
+            const SizedBox(width: 12),
+            Expanded(child: _statCard()),
+          ],
+        ),
+        const SizedBox(height: 16),
+        _box(width: 140, height: 18),
+        const SizedBox(height: 14),
+        _statCard(),
+        const SizedBox(height: 16),
+        _box(width: 120, height: 18),
+        const SizedBox(height: 14),
+        _statCard(),
+      ],
+    );
+  }
+
+  Widget _statCard() {
+    return Container(
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(18),
+        color: Colors.white,
+      ),
+      child: Row(
+        children: [
+          _circle(40),
+          const SizedBox(width: 12),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _box(width: 80, height: 16),
+              const SizedBox(height: 6),
+              _box(width: 100, height: 12),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ================= ORDERS SECTION =================
+  Widget _ordersSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _box(width: 160, height: 18),
+        const SizedBox(height: 14),
+        ...List.generate(2, (index) => _orderCard()),
+      ],
+    );
+  }
+
+  Widget _orderCard() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(18),
+          color: Colors.white,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _box(width: 120, height: 16),
+                _box(width: 70, height: 20, radius: 12),
+              ],
+            ),
+            const SizedBox(height: 10),
+            _box(height: 12),
+            const SizedBox(height: 8),
+            _box(height: 12),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                _box(width: 80, height: 24, radius: 12),
+                const SizedBox(width: 8),
+                _box(width: 80, height: 24, radius: 12),
+              ],
+            ),
+            const SizedBox(height: 14),
+            _box(width: double.infinity, height: 44, radius: 14),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ================= COMMON BOX =================
+  Widget _box({
+    double width = double.infinity,
+    required double height,
+    double radius = 6,
+  }) {
+    return Container(
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(radius),
+      ),
+    );
+  }
+
+  Widget _circle(double size) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        shape: BoxShape.circle,
+      ),
+    );
+  }
+}
 
 class CurrentScreen extends ConsumerStatefulWidget {
   final int initialTab;
@@ -83,8 +309,9 @@ class _CurrentScreenState extends ConsumerState<CurrentScreen>
 
     return dashboardState.when(
       data: (dashboard) => _buildDashboardUI(dashboard!),
-      loading: () =>
-          const Scaffold(body: Center(child: CircularProgressIndicator())),
+      loading: () => const CurrentScreenShimmer(),
+      // loading: () =>
+      //     const Scaffold(body: Center(child: CircularProgressIndicator())),
       error: (err, st) =>
           Scaffold(body: Center(child: Text("Error: ${err.toString()}"))),
     );
@@ -274,12 +501,18 @@ class _CurrentScreenState extends ConsumerState<CurrentScreen>
                             );
 
                             if (hasActiveOrder) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text("Complete your order first"),
-                                  backgroundColor: Colors.red,
-                                ),
+                              // ScaffoldMessenger.of(context).showSnackBar(
+                              //   const SnackBar(
+                              //     content: Text("Complete your order first"),
+                              //     backgroundColor: Colors.red,
+                              //   ),
+                              // );
+
+                              AppSnackBar.showSuccess(
+                                context,
+                                "Complete your order first",
                               );
+
                               return; // ❌ STOP
                             }
                           }
@@ -287,12 +520,13 @@ class _CurrentScreenState extends ConsumerState<CurrentScreen>
                           try {
                             await controller.toggleAvailability(value);
                           } catch (e) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(e.toString()),
-                                backgroundColor: Colors.red,
-                              ),
-                            );
+                            AppSnackBar.showError(context, e.toString());
+                            // ScaffoldMessenger.of(context).showSnackBar(
+                            //   SnackBar(
+                            //     content: Text(e.toString()),
+                            //     backgroundColor: Colors.red,
+                            //   ),
+                            // );
                           }
                         },
                 ),

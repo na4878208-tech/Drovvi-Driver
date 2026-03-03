@@ -28,4 +28,7 @@ abstract class ApiUrls {
   static const earnings = "/driver/earnings";
 
   static const earningsSummary = "/driver/earnings/summary";
+
+
+  static const logout = "/driver/auth/logout";
 }

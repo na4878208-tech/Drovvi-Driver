@@ -1,6 +1,8 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:logisticdriverapp/constants/bottom_show.dart';
 import '../../../constants/validation_regx.dart';
 import '../../../export.dart';
 import 'login_controller.dart';
@@ -124,7 +126,7 @@ class _LoginState extends ConsumerState<Login> {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        context.go("/forget-password");
+                        context.push("/forget-password");
                       },
                       child: CustomText(
                         txt: "Forget Password",
@@ -161,11 +163,13 @@ class _LoginState extends ConsumerState<Login> {
                                 loginState.value != null) {
                               context.go("/home"); // Navigate to home
                             } else if (loginState is AsyncError) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text("Invalid email or password"),
-                                ),
-                              );
+                              // ScaffoldMessenger.of(context).showSnackBar(
+                              //   SnackBar(
+                              //     content: Text("Invalid email or password"),
+                              //   ),
+                              // );
+
+                              AppSnackBar.showError(context, "Invalid email or password");
                             }
                           }
                         }
