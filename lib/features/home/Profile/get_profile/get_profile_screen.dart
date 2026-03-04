@@ -111,89 +111,6 @@ class _GetProfileScreenState extends ConsumerState<GetProfileScreen> {
       ),
     );
   }
-  // @override
-  // Widget build(BuildContext context) {
-  //   final profileState = ref.watch(profileControllerProvider);
-  //   final Color blueColor = AppColors.electricTeal;
-  //   // Screen height ka hisaab lagana zaroori hai is layout ke liye
-  //   double screenHeight = MediaQuery.of(context).size.height;
-
-  //   return Scaffold(
-  //     backgroundColor: AppColors.lightGrayBackground,
-  //     appBar: AppBar(
-  //       automaticallyImplyLeading: false,
-  //       title: const Text(
-  //         'Profile',
-  //         style: TextStyle(
-  //           color: AppColors.pureWhite,
-  //           fontWeight: FontWeight.bold,
-  //         ),
-  //       ),
-  //       centerTitle: true,
-  //       backgroundColor: blueColor,
-  //       elevation: 0,
-  //       actions: [
-  //         Padding(
-  //           padding: EdgeInsets.only(right: 15.0),
-  //           child: IconButton(
-  //             onPressed: () {
-  //               context.go("/settings");
-  //             },
-  //             icon: Icon(Icons.settings, color: AppColors.pureWhite, size: 28),
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-
-  //     body: Column(
-  //       children: [
-  //         Expanded(
-  //           child: Stack(
-  //             children: [
-  //               Container(height: 150, color: blueColor),
-
-  //               Positioned(
-  //                 top: screenHeight * 0.1,
-  //                 left: 20,
-  //                 right: 20,
-  //                 bottom: 45,
-  //                 child: _buildInfoCard(),
-  //               ),
-
-  //               Positioned(
-  //                 top: 10,
-  //                 left: 0,
-  //                 right: 0,
-  //                 child: Builder(
-  //                   builder: (navContext) => Column(
-  //                     children: [
-  //                       _buildProfileImage(navContext, AppColors.electricTeal),
-  //                       const SizedBox(height: 15),
-  //                       const Text(
-  //                         'John Doe',
-  //                         style: TextStyle(
-  //                           color: AppColors.darkText,
-  //                           fontSize: 24,
-  //                           fontWeight: FontWeight.w600,
-  //                         ),
-  //                       ),
-  //                       Container(
-  //                         width: 300,
-  //                         margin: const EdgeInsets.only(top: 8),
-  //                         height: 1,
-  //                         color: AppColors.electricTeal,
-  //                       ),
-  //                     ],
-  //                   ),
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 
   // --- Profile Image Widget ---
   Widget _buildProfileImage(context, Color primaryBlue) {
@@ -244,7 +161,7 @@ class _GetProfileScreenState extends ConsumerState<GetProfileScreen> {
           children: [
             /// ================= STATS =================
             const Text(
-              'Stats',
+              'Status',
               style: TextStyle(
                 color: AppColors.electricTeal,
                 fontSize: 20,
@@ -267,26 +184,21 @@ class _GetProfileScreenState extends ConsumerState<GetProfileScreen> {
             ),
             const SizedBox(height: 10),
 
-            _buildInfoRow(
-              label: "Name",
-              value: user.name,
-              showVerification: false,
+             _buildDoubleInfoRow(
+              label1: "Name",
+              value1: user.name,
+              label2: "Email",
+              value2: user.email,
             ),
-            _buildInfoRow(
-              label: "Email",
-              value: user.email,
-              showVerification: false,
+            const SizedBox(height: 5),
+
+            _buildDoubleInfoRow(
+              label1: "Phone",
+              value1: user.phone,
+              label2: "Role",
+              value2: user.role,
             ),
-            _buildInfoRow(
-              label: "Phone",
-              value: user.phone,
-              showVerification: true,
-            ),
-            _buildInfoRow(
-              label: "Role",
-              value: user.role,
-              showVerification: false,
-            ),
+            const SizedBox(height: 5),
             _buildInfoRow(
               label: "Account Status",
               value: user.status,
@@ -306,47 +218,26 @@ class _GetProfileScreenState extends ConsumerState<GetProfileScreen> {
             ),
             const SizedBox(height: 10),
 
-            _buildInfoRow(
-              label: "License Number",
-              value: driver.licenseNumber,
-              showVerification: false,
+            _buildDoubleInfoRow(
+              label1: "License Number",
+              value1: driver.licenseNumber,
+              label2: "Company",
+              value2: driver.company.name,
             ),
-            _buildInfoRow(
-              label: "License Type",
-              value: driver.licenseType ?? "-",
-              showVerification: false,
+            const SizedBox(height: 5),
+            _buildDoubleInfoRow(
+              label1: "License Expiry",
+              value1: driver.licenseExpiry.split("T").first,
+              label2: "Date of Birth",
+              value2: driver.dateOfBirth.split("T").first,
             ),
-            _buildInfoRow(
-              label: "License Expiry",
-              value: driver.licenseExpiry.split("T").first,
-              showVerification: false,
+            const SizedBox(height: 5),
+            _buildDoubleInfoRow(
+              label1: "Driver Status",
+              value1: driver.status,
+              label2: "Driver Rating",
+              value2: driver.rating,
             ),
-            _buildInfoRow(
-              label: "Date of Birth",
-              value: driver.dateOfBirth.split("T").first,
-              showVerification: false,
-            ),
-            _buildInfoRow(
-              label: "Driver Status",
-              value: driver.status,
-              showVerification: false,
-            ),
-            _buildInfoRow(
-              label: "Driver Rating",
-              value: driver.rating,
-              showVerification: false,
-            ),
-            _buildInfoRow(
-              label: "Total Trips",
-              value: driver.totalTrips.toString(),
-              showVerification: false,
-            ),
-            _buildInfoRow(
-              label: "Company",
-              value: driver.company.name,
-              showVerification: false,
-            ),
-
             const SizedBox(height: 25),
 
             /// ================= VEHICLE INFO =================
@@ -360,26 +251,20 @@ class _GetProfileScreenState extends ConsumerState<GetProfileScreen> {
             ),
             const SizedBox(height: 10),
 
-            _buildInfoRow(
-              label: "Registration Number",
-              value: vehicle.registrationNumber,
-              showVerification: false,
+            _buildDoubleInfoRow(
+              label1: "Registration Number",
+              value1: vehicle.registrationNumber,
+              label2: "Make",
+              value2: vehicle.make,
             ),
-            _buildInfoRow(
-              label: "Make",
-              value: vehicle.make,
-              showVerification: false,
+            const SizedBox(height: 5),
+            _buildDoubleInfoRow(
+              label1: "Model",
+              value1: vehicle.model,
+              label2: "Type",
+              value2: vehicle.type,
             ),
-            _buildInfoRow(
-              label: "Model",
-              value: vehicle.model,
-              showVerification: false,
-            ),
-            _buildInfoRow(
-              label: "Type",
-              value: vehicle.type,
-              showVerification: false,
-            ),
+            const SizedBox(height: 5),
             _buildInfoRow(
               label: "Color",
               value: vehicle.color,
@@ -390,34 +275,6 @@ class _GetProfileScreenState extends ConsumerState<GetProfileScreen> {
       ),
     );
   }
-
-  // Widget _buildStatsRow() {
-  //   return Row(
-  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //     children: [
-  //       Column(
-  //         children: const [
-  //           Text(
-  //             "450",
-  //             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-  //           ),
-  //           SizedBox(height: 2),
-  //           Text("Trips", style: TextStyle(color: Colors.grey)),
-  //         ],
-  //       ),
-  //       Column(
-  //         children: const [
-  //           Text(
-  //             "12",
-  //             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-  //           ),
-  //           SizedBox(height: 4),
-  //           Text("Months", style: TextStyle(color: Colors.grey)),
-  //         ],
-  //       ),
-  //     ],
-  //   );
-  // }
 
   Widget _buildStatsRow(stats) {
     return Row(
@@ -499,6 +356,40 @@ class _GetProfileScreenState extends ConsumerState<GetProfileScreen> {
                 ],
               ),
           ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDoubleInfoRow({
+    required String label1,
+    required String value1,
+    required String label2,
+    required String value2,
+    bool showVerification1 = false,
+    bool showVerification2 = false,
+  }) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        /// LEFT SIDE
+        Expanded(
+          child: _buildInfoRow(
+            label: label1,
+            value: value1,
+            showVerification: showVerification1,
+          ),
+        ),
+
+        const SizedBox(width: 15),
+
+        /// RIGHT SIDE
+        Expanded(
+          child: _buildInfoRow(
+            label: label2,
+            value: value2,
+            showVerification: showVerification2,
+          ),
         ),
       ],
     );

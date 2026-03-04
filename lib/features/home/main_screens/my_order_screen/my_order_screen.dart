@@ -6,11 +6,8 @@ import 'package:logisticdriverapp/constants/bottom_show.dart';
 
 import 'my_order_controller.dart';
 import 'my_order_modal.dart';
-import '../../../../export.dart'; // AppColors & CustomText
-
-import 'package:flutter/material.dart';
+import '../../../../export.dart'; 
 import 'package:shimmer/shimmer.dart';
-import '../../../../export.dart';
 
 class MyOrdersShimmer extends StatelessWidget {
   const MyOrdersShimmer({super.key});
@@ -31,29 +28,29 @@ class MyOrdersShimmer extends StatelessWidget {
     );
   }
 
-  Widget _filterShimmer() {
-    return SizedBox(
-      height: 60,
-      child: ListView.separated(
-        padding: const EdgeInsets.all(12),
-        scrollDirection: Axis.horizontal,
-        itemBuilder: (_, __) => Shimmer.fromColors(
-          baseColor: Colors.grey.shade300,
-          highlightColor: Colors.grey.shade100,
-          child: Container(
-            width: 80,
-            height: 36,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-            ),
-          ),
-        ),
-        separatorBuilder: (_, __) => const SizedBox(width: 8),
-        itemCount: 6,
-      ),
-    );
-  }
+  // Widget _filterShimmer() {
+  //   return SizedBox(
+  //     height: 60,
+  //     child: ListView.separated(
+  //       padding: const EdgeInsets.all(12),
+  //       scrollDirection: Axis.horizontal,
+  //       itemBuilder: (_, __) => Shimmer.fromColors(
+  //         baseColor: Colors.grey.shade300,
+  //         highlightColor: Colors.grey.shade100,
+  //         child: Container(
+  //           width: 80,
+  //           height: 36,
+  //           decoration: BoxDecoration(
+  //             color: Colors.white,
+  //             borderRadius: BorderRadius.circular(20),
+  //           ),
+  //         ),
+  //       ),
+  //       separatorBuilder: (_, __) => const SizedBox(width: 8),
+  //       itemCount: 6,
+  //     ),
+  //   );
+  // }
 
   Widget _orderCardShimmer() {
     return Padding(
@@ -262,55 +259,55 @@ class _MyOrdersScreenState extends ConsumerState<MyOrdersScreen> {
   }
 
   // ================= Loading State =================
-  Widget _buildLoadingState() {
-    return ListView.builder(
-      padding: const EdgeInsets.all(12),
-      itemCount: 5,
-      itemBuilder: (_, __) => Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: AppColors.pureWhite,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Container(
-                  width: 60,
-                  height: 20,
-                  color: AppColors.mediumGray.withOpacity(0.2),
-                ),
-                const Spacer(),
-                Container(
-                  width: 80,
-                  height: 20,
-                  color: AppColors.mediumGray.withOpacity(0.2),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Container(
-                  width: 100,
-                  height: 16,
-                  color: AppColors.mediumGray.withOpacity(0.2),
-                ),
-                const Spacer(),
-                Container(
-                  width: 60,
-                  height: 16,
-                  color: AppColors.mediumGray.withOpacity(0.2),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  // Widget _buildLoadingState() {
+  //   return ListView.builder(
+  //     padding: const EdgeInsets.all(12),
+  //     itemCount: 5,
+  //     itemBuilder: (_, __) => Container(
+  //       margin: const EdgeInsets.only(bottom: 12),
+  //       padding: const EdgeInsets.all(16),
+  //       decoration: BoxDecoration(
+  //         color: AppColors.pureWhite,
+  //         borderRadius: BorderRadius.circular(12),
+  //       ),
+  //       child: Column(
+  //         children: [
+  //           Row(
+  //             children: [
+  //               Container(
+  //                 width: 60,
+  //                 height: 20,
+  //                 color: AppColors.mediumGray.withOpacity(0.2),
+  //               ),
+  //               const Spacer(),
+  //               Container(
+  //                 width: 80,
+  //                 height: 20,
+  //                 color: AppColors.mediumGray.withOpacity(0.2),
+  //               ),
+  //             ],
+  //           ),
+  //           const SizedBox(height: 12),
+  //           Row(
+  //             children: [
+  //               Container(
+  //                 width: 100,
+  //                 height: 16,
+  //                 color: AppColors.mediumGray.withOpacity(0.2),
+  //               ),
+  //               const Spacer(),
+  //               Container(
+  //                 width: 60,
+  //                 height: 16,
+  //                 color: AppColors.mediumGray.withOpacity(0.2),
+  //               ),
+  //             ],
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
   // ================= Error State =================
   Widget _buildErrorState(String error) {

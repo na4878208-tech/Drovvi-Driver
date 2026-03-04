@@ -12,10 +12,7 @@ import '../my_order_screen/my_order_controller.dart';
 import '../my_order_screen/my_order_modal.dart';
 import 'home_controller.dart';
 import 'home_modal.dart';
-
-import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:logisticdriverapp/constants/colors.dart';
 
 class CurrentScreenShimmer extends StatelessWidget {
   const CurrentScreenShimmer({super.key});
