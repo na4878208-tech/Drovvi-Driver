@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../../export.dart';
-export '../../../common_widgets/cuntom_textfield.dart';
-export '../../../common_widgets/custom_button.dart';
+import 'package:logisticdriverapp/features/home/Profile/get_profile/edit_profile/update_profile_controller.dart';
+import '../../../../../export.dart';
+export '../../../../../common_widgets/cuntom_textfield.dart';
+export '../../../../../common_widgets/custom_button.dart';
 
-class EditProfileScreen extends StatefulWidget {
+class EditProfileScreen extends ConsumerStatefulWidget {
   const EditProfileScreen({super.key});
 
   @override
-  State<EditProfileScreen> createState() => _EditProfileScreenState();
+  ConsumerState<EditProfileScreen> createState() => _EditProfileScreenState();
 }
 
-class _EditProfileScreenState extends State<EditProfileScreen> {
+class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   final TextEditingController carnumberController = TextEditingController();
   final TextEditingController LicenseController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
@@ -211,21 +213,61 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             const SizedBox(height: 30),
 
             //  Next Button
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: CustomButton(
-                isChecked: isChecked,
-                text: "Updated",
-                backgroundColor: AppColors.electricTeal,
-                borderColor: AppColors.electricTeal,
-                textColor: AppColors.lightGrayBackground,
-                onPressed: () {
-                  if (isChecked) {
+            CustomButton(
+              isChecked: isChecked,
+              text: "Updated",
+              backgroundColor: AppColors.electricTeal,
+              borderColor: AppColors.electricTeal,
+              textColor: AppColors.lightGrayBackground,
+              onPressed: () async {
+                if (!isChecked) return;
+
+                await ref
+                    .read(updateProfileControllerProvider.notifier)
+                    .updateProfile(
+                      name: carnumberController.text,
+                      phone: phoneController.text,
+                      emergencyName: LicenseController.text,
+                      emergencyPhone: emailController.text,
+                      latitude: "2030",
+                      longitude: "2036",
+                    );
+
+                final state = ref.read(updateProfileControllerProvider);
+
+                state.whenOrNull(
+                  data: (data) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(data?.message ?? "Profile Updated"),
+                      ),
+                    );
+
                     context.go("/profile");
-                  }
-                },
-              ),
+                  },
+                  error: (e, _) {
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text(e.toString())));
+                  },
+                );
+              },
             ),
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(horizontal: 30),
+            //   child: CustomButton(
+            //     isChecked: isChecked,
+            //     text: "Updated",
+            //     backgroundColor: AppColors.electricTeal,
+            //     borderColor: AppColors.electricTeal,
+            //     textColor: AppColors.lightGrayBackground,
+            //     onPressed: () {
+            //       if (isChecked) {
+            //         context.go("/profile");
+            //       }
+            //     },
+            //   ),
+            // ),
           ],
         ),
       ),

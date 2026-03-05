@@ -14,6 +14,10 @@ import 'home_controller.dart';
 import 'home_modal.dart';
 import 'package:shimmer/shimmer.dart';
 
+import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
+import '../../../../constants/colors.dart';
+
 class CurrentScreenShimmer extends StatelessWidget {
   const CurrentScreenShimmer({super.key});
 
@@ -21,33 +25,84 @@ class CurrentScreenShimmer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.lightGrayBackground,
-      body: Shimmer.fromColors(
-        baseColor: Colors.grey.shade300,
-        highlightColor: Colors.grey.shade100,
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _driverHeader(),
-              const SizedBox(height: 20),
-              _infoCard(),
-              const SizedBox(height: 16),
-              _infoCard(),
-              const SizedBox(height: 16),
-              _infoCard(),
-              const SizedBox(height: 20),
-              _statsSection(),
-              const SizedBox(height: 20),
-              _ordersSection(),
-            ],
+      body: Column(
+        children: [
+          _appBarShimmer(),
+
+          Expanded(
+            child: Shimmer.fromColors(
+              baseColor: Colors.grey.shade300,
+              highlightColor: Colors.grey.shade100,
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    _driverHeader(),
+                    const SizedBox(height: 20),
+
+                    _infoCard(),
+                    const SizedBox(height: 16),
+
+                    _infoCard(),
+                    const SizedBox(height: 16),
+
+                    _infoCard(),
+                    const SizedBox(height: 20),
+
+                    _statsSection(),
+                    const SizedBox(height: 20),
+
+                    _ordersSection(),
+                  ],
+                ),
+              ),
+            ),
           ),
+        ],
+      ),
+    );
+  }
+
+  // ================= APP BAR =================
+
+  Widget _appBarShimmer() {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(16, 50, 16, 16),
+      decoration: const BoxDecoration(
+        color: AppColors.electricTeal,
+      ),
+      child: Shimmer.fromColors(
+        baseColor: Colors.white.withOpacity(0.35),
+        highlightColor: Colors.white.withOpacity(0.7),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                _box(width: 140, height: 18),
+                const Spacer(),
+                const CircleAvatar(
+                  radius: 14,
+                  backgroundColor: Colors.white,
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                Expanded(child: _box(height: 16)),
+                const SizedBox(width: 30),
+                Expanded(child: _box(height: 16)),
+              ],
+            ),
+          ],
         ),
       ),
     );
   }
 
   // ================= DRIVER HEADER =================
+
   Widget _driverHeader() {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -59,23 +114,32 @@ class CurrentScreenShimmer extends StatelessWidget {
         children: [
           _circle(56),
           const SizedBox(width: 12),
+
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _box(width: 160, height: 16),
-                const SizedBox(height: 8),
-                _box(width: 120, height: 12),
+                _box(width: 180, height: 16),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    _box(width: 60, height: 12, radius: 10),
+                    const SizedBox(width: 10),
+                    _box(width: 110, height: 12, radius: 10),
+                  ],
+                )
               ],
             ),
           ),
-          _box(width: 40, height: 20, radius: 20),
+
+          _box(width: 40, height: 22, radius: 20)
         ],
       ),
     );
   }
 
-  // ================= INFO CARD (Company/Depot/Vehicle) =================
+  // ================= INFO CARDS =================
+
   Widget _infoCard() {
     return Container(
       padding: const EdgeInsets.all(20),
@@ -86,33 +150,42 @@ class CurrentScreenShimmer extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _box(width: 120, height: 18),
-          const SizedBox(height: 16),
+          Row(
+            children: [
+              _box(width: 6, height: 24),
+              const SizedBox(width: 10),
+              _box(width: 120, height: 16),
+            ],
+          ),
+          const SizedBox(height: 18),
+
           ...List.generate(
             4,
             (index) => Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),
               child: Row(
                 children: [
-                  _circle(30),
+                  _circle(34),
                   const SizedBox(width: 12),
                   Expanded(child: _box(height: 14)),
                 ],
               ),
             ),
-          ),
+          )
         ],
       ),
     );
   }
 
-  // ================= STATS SECTION =================
+  // ================= STATS =================
+
   Widget _statsSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _box(width: 140, height: 18),
-        const SizedBox(height: 14),
+        _box(width: 120, height: 18),
+        const SizedBox(height: 16),
+
         Row(
           children: [
             Expanded(child: _statCard()),
@@ -120,13 +193,19 @@ class CurrentScreenShimmer extends StatelessWidget {
             Expanded(child: _statCard()),
           ],
         ),
-        const SizedBox(height: 16),
-        _box(width: 140, height: 18),
+
+        const SizedBox(height: 20),
+
+        _box(width: 150, height: 18),
         const SizedBox(height: 14),
+
         _statCard(),
-        const SizedBox(height: 16),
+
+        const SizedBox(height: 20),
+
         _box(width: 120, height: 18),
         const SizedBox(height: 14),
+
         _statCard(),
       ],
     );
@@ -150,64 +229,73 @@ class CurrentScreenShimmer extends StatelessWidget {
               const SizedBox(height: 6),
               _box(width: 100, height: 12),
             ],
-          ),
+          )
         ],
       ),
     );
   }
 
-  // ================= ORDERS SECTION =================
+  // ================= ORDERS =================
+
   Widget _ordersSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _box(width: 160, height: 18),
         const SizedBox(height: 14),
-        ...List.generate(2, (index) => _orderCard()),
+
+        _orderCard(),
+        const SizedBox(height: 16),
+
+        _orderCard(),
       ],
     );
   }
 
   Widget _orderCard() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(18),
-          color: Colors.white,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _box(width: 120, height: 16),
-                _box(width: 70, height: 20, radius: 12),
-              ],
-            ),
-            const SizedBox(height: 10),
-            _box(height: 12),
-            const SizedBox(height: 8),
-            _box(height: 12),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                _box(width: 80, height: 24, radius: 12),
-                const SizedBox(width: 8),
-                _box(width: 80, height: 24, radius: 12),
-              ],
-            ),
-            const SizedBox(height: 14),
-            _box(width: double.infinity, height: 44, radius: 14),
-          ],
-        ),
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(18),
+        color: Colors.white,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _box(width: 130, height: 16),
+              _box(width: 70, height: 20, radius: 10),
+            ],
+          ),
+
+          const SizedBox(height: 10),
+
+          _box(height: 12),
+          const SizedBox(height: 8),
+          _box(height: 12),
+
+          const SizedBox(height: 12),
+
+          Row(
+            children: [
+              _box(width: 70, height: 22, radius: 12),
+              const SizedBox(width: 8),
+              _box(width: 70, height: 22, radius: 12),
+            ],
+          ),
+
+          const SizedBox(height: 14),
+
+          _box(height: 44, radius: 12)
+        ],
       ),
     );
   }
 
-  // ================= COMMON BOX =================
+  // ================= COMMON WIDGETS =================
+
   Widget _box({
     double width = double.infinity,
     required double height,
@@ -234,6 +322,227 @@ class CurrentScreenShimmer extends StatelessWidget {
     );
   }
 }
+
+// class CurrentScreenShimmer extends StatelessWidget {
+//   const CurrentScreenShimmer({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: AppColors.lightGrayBackground,
+//       body: Shimmer.fromColors(
+//         baseColor: Colors.grey.shade300,
+//         highlightColor: Colors.grey.shade100,
+//         child: SingleChildScrollView(
+//           padding: const EdgeInsets.all(16),
+//           child: Column(
+//             crossAxisAlignment: CrossAxisAlignment.start,
+//             children: [
+//               _driverHeader(),
+//               const SizedBox(height: 20),
+//               _infoCard(),
+//               const SizedBox(height: 16),
+//               _infoCard(),
+//               const SizedBox(height: 16),
+//               _infoCard(),
+//               const SizedBox(height: 20),
+//               _statsSection(),
+//               const SizedBox(height: 20),
+//               _ordersSection(),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+
+//   // ================= DRIVER HEADER =================
+//   Widget _driverHeader() {
+//     return Container(
+//       padding: const EdgeInsets.all(16),
+//       decoration: BoxDecoration(
+//         borderRadius: BorderRadius.circular(14),
+//         color: Colors.white,
+//       ),
+//       child: Row(
+//         children: [
+//           _circle(56),
+//           const SizedBox(width: 12),
+//           Expanded(
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 _box(width: 160, height: 16),
+//                 const SizedBox(height: 8),
+//                 _box(width: 120, height: 12),
+//               ],
+//             ),
+//           ),
+//           _box(width: 40, height: 20, radius: 20),
+//         ],
+//       ),
+//     );
+//   }
+
+//   // ================= INFO CARD (Company/Depot/Vehicle) =================
+//   Widget _infoCard() {
+//     return Container(
+//       padding: const EdgeInsets.all(20),
+//       decoration: BoxDecoration(
+//         borderRadius: BorderRadius.circular(20),
+//         color: Colors.white,
+//       ),
+//       child: Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//           _box(width: 120, height: 18),
+//           const SizedBox(height: 16),
+//           ...List.generate(
+//             4,
+//             (index) => Padding(
+//               padding: const EdgeInsets.symmetric(vertical: 8),
+//               child: Row(
+//                 children: [
+//                   _circle(30),
+//                   const SizedBox(width: 12),
+//                   Expanded(child: _box(height: 14)),
+//                 ],
+//               ),
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+
+//   // ================= STATS SECTION =================
+//   Widget _statsSection() {
+//     return Column(
+//       crossAxisAlignment: CrossAxisAlignment.start,
+//       children: [
+//         _box(width: 140, height: 18),
+//         const SizedBox(height: 14),
+//         Row(
+//           children: [
+//             Expanded(child: _statCard()),
+//             const SizedBox(width: 12),
+//             Expanded(child: _statCard()),
+//           ],
+//         ),
+//         const SizedBox(height: 16),
+//         _box(width: 140, height: 18),
+//         const SizedBox(height: 14),
+//         _statCard(),
+//         const SizedBox(height: 16),
+//         _box(width: 120, height: 18),
+//         const SizedBox(height: 14),
+//         _statCard(),
+//       ],
+//     );
+//   }
+
+//   Widget _statCard() {
+//     return Container(
+//       padding: const EdgeInsets.all(18),
+//       decoration: BoxDecoration(
+//         borderRadius: BorderRadius.circular(18),
+//         color: Colors.white,
+//       ),
+//       child: Row(
+//         children: [
+//           _circle(40),
+//           const SizedBox(width: 12),
+//           Column(
+//             crossAxisAlignment: CrossAxisAlignment.start,
+//             children: [
+//               _box(width: 80, height: 16),
+//               const SizedBox(height: 6),
+//               _box(width: 100, height: 12),
+//             ],
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+
+//   // ================= ORDERS SECTION =================
+//   Widget _ordersSection() {
+//     return Column(
+//       crossAxisAlignment: CrossAxisAlignment.start,
+//       children: [
+//         _box(width: 160, height: 18),
+//         const SizedBox(height: 14),
+//         ...List.generate(2, (index) => _orderCard()),
+//       ],
+//     );
+//   }
+
+//   Widget _orderCard() {
+//     return Padding(
+//       padding: const EdgeInsets.only(bottom: 16),
+//       child: Container(
+//         padding: const EdgeInsets.all(16),
+//         decoration: BoxDecoration(
+//           borderRadius: BorderRadius.circular(18),
+//           color: Colors.white,
+//         ),
+//         child: Column(
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           children: [
+//             Row(
+//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//               children: [
+//                 _box(width: 120, height: 16),
+//                 _box(width: 70, height: 20, radius: 12),
+//               ],
+//             ),
+//             const SizedBox(height: 10),
+//             _box(height: 12),
+//             const SizedBox(height: 8),
+//             _box(height: 12),
+//             const SizedBox(height: 12),
+//             Row(
+//               children: [
+//                 _box(width: 80, height: 24, radius: 12),
+//                 const SizedBox(width: 8),
+//                 _box(width: 80, height: 24, radius: 12),
+//               ],
+//             ),
+//             const SizedBox(height: 14),
+//             _box(width: double.infinity, height: 44, radius: 14),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+
+//   // ================= COMMON BOX =================
+//   Widget _box({
+//     double width = double.infinity,
+//     required double height,
+//     double radius = 6,
+//   }) {
+//     return Container(
+//       width: width,
+//       height: height,
+//       decoration: BoxDecoration(
+//         color: Colors.white,
+//         borderRadius: BorderRadius.circular(radius),
+//       ),
+//     );
+//   }
+
+//   Widget _circle(double size) {
+//     return Container(
+//       width: size,
+//       height: size,
+//       decoration: const BoxDecoration(
+//         color: Colors.white,
+//         shape: BoxShape.circle,
+//       ),
+//     );
+//   }
+// }
 
 class CurrentScreen extends ConsumerStatefulWidget {
   final int initialTab;

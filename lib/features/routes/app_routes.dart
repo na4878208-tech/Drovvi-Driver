@@ -13,7 +13,7 @@ import 'package:logisticdriverapp/features/bottom_navbar/bottom_navbar_screen.da
 // Splash
 import 'package:logisticdriverapp/features/custom_splash/splash.dart';
 import 'package:logisticdriverapp/features/home/Profile/Change_password_screen.dart';
-import 'package:logisticdriverapp/features/home/Profile/Edit_profile.dart';
+import 'package:logisticdriverapp/features/home/Profile/get_profile/edit_profile/Edit_profile.dart';
 import 'package:logisticdriverapp/features/home/Profile/help_support_screen.dart';
 import 'package:logisticdriverapp/features/home/Profile/setting_screen.dart';
 import 'package:logisticdriverapp/features/home/conform_order_screen.dart';

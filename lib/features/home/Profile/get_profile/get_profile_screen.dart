@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logisticdriverapp/export.dart';
 import 'package:logisticdriverapp/features/home/Profile/get_profile/profile_controller.dart';
+import 'package:logisticdriverapp/features/home/Profile/get_profile/profile_model.dart';
 
 class GetProfileScreen extends ConsumerStatefulWidget {
   const GetProfileScreen({super.key});
@@ -136,10 +137,10 @@ class _GetProfileScreenState extends ConsumerState<GetProfileScreen> {
   }
 
   Widget _buildInfoCard({
-    required user,
-    required driver,
-    required vehicle,
-    required stats,
+    required User user,
+    required Driver driver,
+    required Vehicle vehicle,
+    required Stats stats,
   }) {
     return Container(
       width: double.infinity,
@@ -184,7 +185,7 @@ class _GetProfileScreenState extends ConsumerState<GetProfileScreen> {
             ),
             const SizedBox(height: 10),
 
-             _buildDoubleInfoRow(
+            _buildDoubleInfoRow(
               label1: "Name",
               value1: user.name,
               label2: "Email",
@@ -234,9 +235,12 @@ class _GetProfileScreenState extends ConsumerState<GetProfileScreen> {
             const SizedBox(height: 5),
             _buildDoubleInfoRow(
               label1: "Driver Status",
-              value1: driver.status,
+              // value1: driver.status,
+              value1: driver.driverRating.toString(),
+
               label2: "Driver Rating",
-              value2: driver.rating,
+              // value2: driver.rating,
+              value2: driver.driverRating.toString(),
             ),
             const SizedBox(height: 25),
 
@@ -260,9 +264,11 @@ class _GetProfileScreenState extends ConsumerState<GetProfileScreen> {
             const SizedBox(height: 5),
             _buildDoubleInfoRow(
               label1: "Model",
-              value1: vehicle.model,
+              // value1: vehicle.model,
+              value1: vehicle.vehicleType,
               label2: "Type",
-              value2: vehicle.type,
+              // value2: vehicle.type,
+              value2: vehicle.vehicleType,
             ),
             const SizedBox(height: 5),
             _buildInfoRow(
@@ -301,7 +307,7 @@ class _GetProfileScreenState extends ConsumerState<GetProfileScreen> {
         Column(
           children: [
             Text(
-              stats.rating,
+              stats.rating.toString(),
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const Text("Rating", style: TextStyle(color: Colors.grey)),
@@ -331,7 +337,7 @@ class _GetProfileScreenState extends ConsumerState<GetProfileScreen> {
               value,
               style: TextStyle(
                 color: valueColor,
-                fontSize: 17,
+                fontSize: 13,
                 fontWeight: FontWeight.w500,
               ),
             ),
