@@ -15,13 +15,13 @@ plugins {
 }
 
 android {
-    namespace = "com.skyguru.logisticdriver"
+    namespace = "com.drovvi.logisticdriver"
     compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.skyguru.logisticdriver"
+        applicationId = "com.drovvi.logisticdriver"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
