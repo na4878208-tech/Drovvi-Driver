@@ -163,11 +163,6 @@ class _LoginState extends ConsumerState<Login> {
                                 loginState.value != null) {
                               context.go("/home"); // Navigate to home
                             } else if (loginState is AsyncError) {
-                              // ScaffoldMessenger.of(context).showSnackBar(
-                              //   SnackBar(
-                              //     content: Text("Invalid email or password"),
-                              //   ),
-                              // );
 
                               AppSnackBar.showError(context, "Invalid email or password");
                             }
@@ -175,35 +170,6 @@ class _LoginState extends ConsumerState<Login> {
                         }
                       : null,
                 ),
-                gapH32,
-
-              // Column(
-              //   mainAxisAlignment: MainAxisAlignment.center,
-              //   children: [
-              //     const Text(
-              //       "Don't have an account",
-              //       style: TextStyle(color: AppColors.mediumGray, fontSize: 14),
-              //     ),
-              //     GestureDetector(
-              //       onTap: () {
-              //         Navigator.push(
-              //           context,
-              //           MaterialPageRoute(builder: (context) => SignUpScreen()),
-              //         );
-              //       },
-              //       child: Text(
-              //         "Sign Up",
-              //         style: TextStyle(
-              //           color: AppColors.electricTeal,
-              //           fontWeight: FontWeight.w700,
-              //           fontSize: 14,
-              //           decoration: TextDecoration.underline,
-              //           decorationColor: AppColors.electricTeal,
-              //         ),
-              //       ),
-              //     ),
-              //   ],
-              // ),
 
               ],
             ),

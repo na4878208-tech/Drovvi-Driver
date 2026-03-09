@@ -6,7 +6,7 @@ import 'package:logisticdriverapp/constants/bottom_show.dart';
 
 import 'my_order_controller.dart';
 import 'my_order_modal.dart';
-import '../../../../export.dart'; 
+import '../../../../export.dart';
 import 'package:shimmer/shimmer.dart';
 
 class MyOrdersShimmer extends StatelessWidget {
@@ -175,6 +175,10 @@ class _MyOrdersScreenState extends ConsumerState<MyOrdersScreen> {
   void initState() {
     super.initState();
     _scrollController = ScrollController();
+
+    Future.microtask(() {
+      ref.read(myOrdersControllerProvider.notifier).fetchMyOrders();
+    });
   }
 
   @override

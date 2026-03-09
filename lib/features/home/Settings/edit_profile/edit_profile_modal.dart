@@ -11,9 +11,9 @@ class UpdateProfileResponse {
 
   factory UpdateProfileResponse.fromJson(Map<String, dynamic> json) {
     return UpdateProfileResponse(
-      success: json["success"],
-      message: json["message"],
-      data: UpdateProfileData.fromJson(json["data"]),
+      success: json["success"] ?? false,
+      message: json["message"] ?? "",
+      data: UpdateProfileData.fromJson(json["data"] ?? {}),
     );
   }
 }
@@ -22,15 +22,12 @@ class UpdateProfileData {
   final UpdateUser user;
   final UpdateDriver driver;
 
-  UpdateProfileData({
-    required this.user,
-    required this.driver,
-  });
+  UpdateProfileData({required this.user, required this.driver});
 
   factory UpdateProfileData.fromJson(Map<String, dynamic> json) {
     return UpdateProfileData(
-      user: UpdateUser.fromJson(json["user"]),
-      driver: UpdateDriver.fromJson(json["driver"]),
+      user: UpdateUser.fromJson(json["user"] ?? {}),
+      driver: UpdateDriver.fromJson(json["driver"] ?? {}),
     );
   }
 }
@@ -50,10 +47,10 @@ class UpdateUser {
 
   factory UpdateUser.fromJson(Map<String, dynamic> json) {
     return UpdateUser(
-      id: json["id"],
-      name: json["name"],
-      email: json["email"],
-      phone: json["phone"],
+      id: json["id"] ?? 0,
+      name: json["name"] ?? "",
+      email: json["email"] ?? "",
+      phone: json["phone"] ?? "",
     );
   }
 }
@@ -63,20 +60,23 @@ class UpdateDriver {
   final String emergencyContactPhone;
   final String currentLatitude;
   final String currentLongitude;
+  final String? lastLocationUpdate;
 
   UpdateDriver({
     required this.emergencyContactName,
     required this.emergencyContactPhone,
     required this.currentLatitude,
     required this.currentLongitude,
+    this.lastLocationUpdate,
   });
 
   factory UpdateDriver.fromJson(Map<String, dynamic> json) {
     return UpdateDriver(
-      emergencyContactName: json["emergency_contact_name"],
-      emergencyContactPhone: json["emergency_contact_phone"],
-      currentLatitude: json["current_latitude"],
-      currentLongitude: json["current_longitude"],
+      emergencyContactName: json["emergency_contact_name"] ?? "",
+      emergencyContactPhone: json["emergency_contact_phone"] ?? "",
+      currentLatitude: json["current_latitude"] ?? "",
+      currentLongitude: json["current_longitude"] ?? "",
+      lastLocationUpdate: json["last_location_update"],
     );
   }
 }

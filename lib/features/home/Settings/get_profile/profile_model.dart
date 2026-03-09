@@ -2,15 +2,12 @@ class ProfileResponse {
   final bool success;
   final ProfileData data;
 
-  ProfileResponse({
-    required this.success,
-    required this.data,
-  });
+  ProfileResponse({required this.success, required this.data});
 
   factory ProfileResponse.fromJson(Map<String, dynamic> json) {
     return ProfileResponse(
       success: json["success"] ?? false,
-      data: ProfileData.fromJson(json["data"]),
+      data: ProfileData.fromJson(json["data"] ?? {}),
     );
   }
 }
@@ -36,15 +33,15 @@ class ProfileData {
 
   factory ProfileData.fromJson(Map<String, dynamic> json) {
     return ProfileData(
-      user: User.fromJson(json["user"]),
-      driver: Driver.fromJson(json["driver"]),
-      vehicle: Vehicle.fromJson(json["vehicle"]),
-      earnings: Earnings.fromJson(json["earnings"]),
+      user: User.fromJson(json["user"] ?? {}),
+      driver: Driver.fromJson(json["driver"] ?? {}),
+      vehicle: Vehicle.fromJson(json["vehicle"] ?? {}),
+      earnings: Earnings.fromJson(json["earnings"] ?? {}),
       bankAccount: json["bank_account"] != null
           ? BankAccount.fromJson(json["bank_account"])
           : null,
-      stats: Stats.fromJson(json["stats"]),
-      alerts: Alerts.fromJson(json["alerts"]),
+      stats: Stats.fromJson(json["stats"] ?? {}),
+      alerts: Alerts.fromJson(json["alerts"] ?? {}),
     );
   }
 }
@@ -72,12 +69,12 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      id: json["id"],
-      name: json["name"],
-      email: json["email"],
-      phone: json["phone"],
-      role: json["role"],
-      status: json["status"],
+      id: json["id"] ?? 0,
+      name: json["name"]?.toString() ?? "",
+      email: json["email"]?.toString() ?? "",
+      phone: json["phone"]?.toString() ?? "",
+      role: json["role"]?.toString() ?? "",
+      status: json["status"]?.toString() ?? "",
       emailVerified: json["email_verified"] ?? false,
       phoneVerified: json["phone_verified"] ?? false,
     );
@@ -103,6 +100,8 @@ class Driver {
   final bool isApproved;
   final bool isOnline;
   final bool canAcceptOrders;
+  final double? currentLatitude; // <- fixed
+  final double? currentLongitude; // <- fixed
   final double driverRating;
   final int totalRatings;
   final int totalTrips;
@@ -134,6 +133,8 @@ class Driver {
     required this.isApproved,
     required this.isOnline,
     required this.canAcceptOrders,
+    this.currentLatitude,
+    this.currentLongitude,
     required this.driverRating,
     required this.totalRatings,
     required this.totalTrips,
@@ -149,35 +150,45 @@ class Driver {
 
   factory Driver.fromJson(Map<String, dynamic> json) {
     return Driver(
-      id: json["id"],
-      licenseNumber: json["license_number"],
-      licenseType: json["license_type"],
-      licenseCategory: json["license_category"],
-      licenseExpiry: json["license_expiry"],
+      id: json["id"] ?? 0,
+      licenseNumber: json["license_number"]?.toString() ?? "",
+      licenseType: json["license_type"]?.toString(),
+      licenseCategory: json["license_category"]?.toString() ?? "",
+      licenseExpiry: json["license_expiry"]?.toString() ?? "",
       licenseExpiringSoon: json["license_expiring_soon"] ?? false,
-      prdpNumber: json["prdp_number"],
-      prdpExpiry: json["prdp_expiry"],
+      prdpNumber: json["prdp_number"]?.toString() ?? "",
+      prdpExpiry: json["prdp_expiry"]?.toString() ?? "",
       prdpExpiringSoon: json["prdp_expiring_soon"] ?? false,
-      dateOfBirth: json["date_of_birth"],
-      age: json["age"],
-      emergencyContactName: json["emergency_contact_name"],
-      emergencyContactPhone: json["emergency_contact_phone"],
-      status: json["status"],
-      approvalStatus: json["approval_status"],
-      isApproved: json["is_approved"],
-      isOnline: json["is_online"],
-      canAcceptOrders: json["can_accept_orders"],
-      driverRating: (json["driver_rating"] as num).toDouble(),
-      totalRatings: json["total_ratings"],
-      totalTrips: json["total_trips"],
-      completedTrips: json["completed_trips"],
-      cancelledTrips: json["cancelled_trips"],
-      onTimePercentage: json["on_time_percentage"],
-      hasAllDocuments: json["has_all_documents"],
-      missingDocuments: List<String>.from(json["missing_documents"] ?? []),
-      documentsVerified: json["documents_verified"],
-      company: Company.fromJson(json["company"]),
-      depot: Depot.fromJson(json["depot"]),
+      dateOfBirth: json["date_of_birth"]?.toString() ?? "",
+      age: json["age"] ?? 0,
+      emergencyContactName: json["emergency_contact_name"]?.toString() ?? "",
+      emergencyContactPhone: json["emergency_contact_phone"]?.toString() ?? "",
+      status: json["status"]?.toString() ?? "",
+      approvalStatus: json["approval_status"]?.toString() ?? "",
+      isApproved: json["is_approved"] ?? false,
+      isOnline: json["is_online"] ?? false,
+      canAcceptOrders: json["can_accept_orders"] ?? false,
+      driverRating: (json["driver_rating"] as num?)?.toDouble() ?? 0,
+      totalRatings: json["total_ratings"] ?? 0,
+      totalTrips: json["total_trips"] ?? 0,
+      completedTrips: json["completed_trips"] ?? 0,
+      cancelledTrips: json["cancelled_trips"] ?? 0,
+      onTimePercentage: json["on_time_percentage"] ?? 0,
+      currentLatitude: double.tryParse(
+        json["current_latitude"]?.toString() ?? "",
+      ),
+      currentLongitude: double.tryParse(
+        json["current_longitude"]?.toString() ?? "",
+      ),
+      hasAllDocuments: json["has_all_documents"] ?? false,
+      missingDocuments: json["missing_documents"] is Map
+          ? (json["missing_documents"] as Map).values
+                .map((e) => e.toString())
+                .toList()
+          : List<String>.from(json["missing_documents"] ?? []),
+      documentsVerified: json["documents_verified"] ?? false,
+      company: Company.fromJson(json["company"] ?? {}),
+      depot: Depot.fromJson(json["depot"] ?? {}),
     );
   }
 }
@@ -187,17 +198,13 @@ class Company {
   final String name;
   final String type;
 
-  Company({
-    required this.id,
-    required this.name,
-    required this.type,
-  });
+  Company({required this.id, required this.name, required this.type});
 
   factory Company.fromJson(Map<String, dynamic> json) {
     return Company(
-      id: json["id"],
-      name: json["name"],
-      type: json["type"],
+      id: json["id"] ?? 0,
+      name: json["name"]?.toString() ?? "",
+      type: json["type"]?.toString() ?? "",
     );
   }
 }
@@ -217,10 +224,10 @@ class Depot {
 
   factory Depot.fromJson(Map<String, dynamic> json) {
     return Depot(
-      id: json["id"],
-      name: json["name"],
-      address: json["address"],
-      city: json["city"],
+      id: json["id"] ?? 0,
+      name: json["name"]?.toString() ?? "",
+      address: json["address"]?.toString() ?? "",
+      city: json["city"]?.toString() ?? "",
     );
   }
 }
@@ -250,15 +257,15 @@ class Vehicle {
 
   factory Vehicle.fromJson(Map<String, dynamic> json) {
     return Vehicle(
-      id: json["id"],
-      registrationNumber: json["registration_number"],
-      make: json["make"],
-      model: json["model"],
-      year: json["year"],
-      vehicleType: json["vehicle_type"],
-      color: json["color"],
-      maxWeightTons: json["max_weight_tons"],
-      status: json["status"],
+      id: json["id"] ?? 0,
+      registrationNumber: json["registration_number"]?.toString() ?? "",
+      make: json["make"]?.toString() ?? "",
+      model: json["model"]?.toString() ?? "",
+      year: json["year"] ?? 0,
+      vehicleType: json["vehicle_type"]?.toString() ?? "",
+      color: json["color"]?.toString() ?? "",
+      maxWeightTons: json["max_weight_tons"]?.toString() ?? "",
+      status: json["status"]?.toString() ?? "",
     );
   }
 }
@@ -284,13 +291,14 @@ class Earnings {
 
   factory Earnings.fromJson(Map<String, dynamic> json) {
     return Earnings(
-      totalEarnings: (json["total_earnings"] as num).toDouble(),
-      pendingEarnings: (json["pending_earnings"] as num).toDouble(),
-      approvedEarnings: (json["approved_earnings"] as num).toDouble(),
-      paidEarnings: (json["paid_earnings"] as num).toDouble(),
-      thisMonthEarnings: (json["this_month_earnings"] as num).toDouble(),
-      averagePerDelivery: (json["average_per_delivery"] as num).toDouble(),
-      currency: json["currency"],
+      totalEarnings: (json["total_earnings"] as num?)?.toDouble() ?? 0,
+      pendingEarnings: (json["pending_earnings"] as num?)?.toDouble() ?? 0,
+      approvedEarnings: (json["approved_earnings"] as num?)?.toDouble() ?? 0,
+      paidEarnings: (json["paid_earnings"] as num?)?.toDouble() ?? 0,
+      thisMonthEarnings: (json["this_month_earnings"] as num?)?.toDouble() ?? 0,
+      averagePerDelivery:
+          (json["average_per_delivery"] as num?)?.toDouble() ?? 0,
+      currency: json["currency"]?.toString() ?? "",
     );
   }
 }
@@ -299,15 +307,12 @@ class BankAccount {
   final String bankName;
   final String accountNumber;
 
-  BankAccount({
-    required this.bankName,
-    required this.accountNumber,
-  });
+  BankAccount({required this.bankName, required this.accountNumber});
 
   factory BankAccount.fromJson(Map<String, dynamic> json) {
     return BankAccount(
-      bankName: json["bank_name"],
-      accountNumber: json["account_number"],
+      bankName: json["bank_name"]?.toString() ?? "",
+      accountNumber: json["account_number"]?.toString() ?? "",
     );
   }
 }
@@ -337,15 +342,16 @@ class Stats {
 
   factory Stats.fromJson(Map<String, dynamic> json) {
     return Stats(
-      totalTrips: json["total_trips"],
-      completedTrips: json["completed_trips"],
-      cancelledTrips: json["cancelled_trips"],
-      rating: (json["rating"] as num).toDouble(),
-      totalRatings: json["total_ratings"],
-      onTimePercentage: json["on_time_percentage"],
-      monthsActive: (json["months_active"] as num).toDouble(),
-      daysSinceRegistration: (json["days_since_registration"] as num).toDouble(),
-      completionRate: (json["completion_rate"] as num).toDouble(),
+      totalTrips: json["total_trips"] ?? 0,
+      completedTrips: json["completed_trips"] ?? 0,
+      cancelledTrips: json["cancelled_trips"] ?? 0,
+      rating: (json["rating"] as num?)?.toDouble() ?? 0,
+      totalRatings: json["total_ratings"] ?? 0,
+      onTimePercentage: json["on_time_percentage"] ?? 0,
+      monthsActive: (json["months_active"] as num?)?.toDouble() ?? 0,
+      daysSinceRegistration:
+          (json["days_since_registration"] as num?)?.toDouble() ?? 0,
+      completionRate: (json["completion_rate"] as num?)?.toDouble() ?? 0,
     );
   }
 }
@@ -367,11 +373,11 @@ class Alerts {
 
   factory Alerts.fromJson(Map<String, dynamic> json) {
     return Alerts(
-      licenseExpiringSoon: json["license_expiring_soon"],
-      prdpExpiringSoon: json["prdp_expiring_soon"],
-      missingDocuments: json["missing_documents"],
-      notApproved: json["not_approved"],
-      cannotAcceptOrders: json["cannot_accept_orders"],
+      licenseExpiringSoon: json["license_expiring_soon"] ?? false,
+      prdpExpiringSoon: json["prdp_expiring_soon"] ?? false,
+      missingDocuments: json["missing_documents"] ?? false,
+      notApproved: json["not_approved"] ?? false,
+      cannotAcceptOrders: json["cannot_accept_orders"] ?? false,
     );
   }
 }

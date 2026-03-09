@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:logisticdriverapp/constants/colors.dart';
 import 'package:logisticdriverapp/features/home/Earning/earning_screen.dart';
 import 'package:logisticdriverapp/features/home/main_screens/home_screen/home_screen.dart';
-import 'package:logisticdriverapp/features/home/Profile/get_profile/get_profile_screen.dart';
 import 'package:logisticdriverapp/features/home/order_details_screen/order_detail_screen.dart';
+
+import '../home/Settings/setting_screen.dart';
 
 class TripsBottomNavBarScreen extends StatefulWidget {
   final int initialIndex;
@@ -40,7 +41,7 @@ class _TripsBottomNavBarScreenState extends State<TripsBottomNavBarScreen> {
               child: Text("No order selected", style: TextStyle(fontSize: 16)),
             ),
       const EarningsScreen(),
-      const GetProfileScreen(),
+      const SettingScreen(),
     ];
   }
 
@@ -76,8 +77,8 @@ class _TripsBottomNavBarScreenState extends State<TripsBottomNavBarScreen> {
             label: "Earning",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline),
-            label: "Profile",
+            icon: Icon(Icons.settings),
+            label: "Setting",
           ),
         ],
       ),

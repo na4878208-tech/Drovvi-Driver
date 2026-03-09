@@ -5,7 +5,8 @@ import '../../../../constants/api_url.dart';
 import '../../../../constants/dio.dart';
 import 'forget_password_modal.dart';
 
-final forgotPasswordRepositoryProvider = Provider<ForgotPasswordRepository>((ref) {
+final forgotPasswordRepositoryProvider =
+    Provider<ForgotPasswordRepository>((ref) {
   final dio = ref.watch(dioProvider);
   return ForgotPasswordRepository(dio: dio);
 });
@@ -19,16 +20,29 @@ class ForgotPasswordRepository {
     final url = ApiUrls.baseurl + ApiUrls.forgotPassword;
 
     try {
-      final response = await dio.post(url, data: {"email": email});
-      print("ForgotPassword Response => ${response.data}");
+      final response = await dio.post(
+        url,
+        data: {"email": email},
+      );
 
-      if (response.statusCode == 200) {
-        return ForgotPasswordModel.fromJson(response.data);
+      /// ✅ FULL API RESPONSE PRINT
+      print("========== FORGOT PASSWORD API ==========");
+      print(response.data);
+      print("=========================================");
+
+      final model = ForgotPasswordModel.fromJson(response.data);
+
+      if (model.success) {
+        return model;
       } else {
-        throw Exception(response.data["message"] ?? "Request failed");
+        throw Exception(model.message);
       }
     } on DioException catch (e) {
-      throw Exception(e.response?.data["message"] ?? "Forgot password request failed");
+      print("Forgot Password Error => ${e.response?.data}");
+
+      throw Exception(
+        e.response?.data?["message"] ?? "Forgot password failed",
+      );
     }
   }
 }

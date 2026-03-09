@@ -5,8 +5,23 @@ abstract class ApiUrls {
   //Login
   static String login = "/driver/auth/login";
 
+  //get
+  static String getprofile = "/driver/auth/profile";
+
   //forget password
   static String forgotPassword = "/driver/auth/forgot-password";
+
+  //profile change password
+  static String profilechangePassword = "/driver/auth/change-password";
+
+  //otp forget password
+  static String otpforgotPassword = "/driver/auth/verify-reset-otp";
+
+  //resend otp forget password
+  static String resendotpforgotPassword = "/driver/auth/resend-reset-otp";
+
+  //change password
+  static String changePassword = "/driver/auth/reset-password";
 
   //Dashboard
   static String dashboard = "/driver/dashboard";

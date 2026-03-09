@@ -12,7 +12,6 @@ import '../order_details_screen/button_process/multi_stop_button/stop_arrived/st
 import '../order_details_screen/drvier_location/tracking.dart';
 import '../order_details_screen/order_detail_controller.dart';
 import '../order_details_screen/order_detail_modal.dart';
-import '../order_details_screen/order_detail_screen.dart';
 import 'map_button_process/delivery_button/delivery_button_controller.dart';
 import 'map_button_process/pick_up_button/pick_up_button_controller.dart';
 
@@ -432,45 +431,36 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   }
 
   void _confirmDelivery() async {
-    final otp = _otp.trim();
-    if (otp.length != 4) {
-      AppSnackBar.showWarning(context, "Please enter a valid 4-digit OTP");
-      return;
-    }
-
-    setState(() => _isProcessing = true);
-
-    try {
-      await ref
-          .read(confirmDeliveryControllerProvider.notifier)
-          .confirmDelivery(orderId: widget.orderId, otp: otp);
-
-      // 🔴 STOP TRACKING
-      ref.read(driverLocationTrackerProvider).stop();
-
-      if (!mounted) return;
-
-      AppSnackBar.showSuccess(context, "Delivery Confirmed ✅");
-      //   context,
-      // ).showSnackBar(const SnackBar(content: Text("Delivery Confirmed ✅")));
-
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => OrderDetailsScreen(orderId: widget.orderId),
-        ),
-      );
-    } catch (e) {
-      if (!mounted) return;
-      AppSnackBar.showError(context, "Delivery Failed: $e");
-      // ScaffoldMessenger.of(
-      //   context,
-      // ).showSnackBar(SnackBar(content: Text("Delivery Failed: $e")));
-    } finally {
-      if (mounted) setState(() => _isProcessing = false);
-    }
+  final otp = _otp.trim();
+  if (otp.length != 4) {
+    AppSnackBar.showWarning(context, "Please enter a valid 4-digit OTP");
+    return;
   }
 
+  setState(() => _isProcessing = true);
+
+  try {
+    await ref
+        .read(confirmDeliveryControllerProvider.notifier)
+        .confirmDelivery(orderId: widget.orderId, otp: otp);
+
+    ref.read(driverLocationTrackerProvider).stop();
+
+    if (!mounted) return;
+
+    AppSnackBar.showSuccess(context, "Delivery Confirmed ✅");
+
+    context.go(
+      "/order-details",
+      extra: widget.orderId,
+    );
+  } catch (e) {
+    if (!mounted) return;
+    AppSnackBar.showError(context, "Delivery Failed: $e");
+  } finally {
+    if (mounted) setState(() => _isProcessing = false);
+  }
+}
   @override
   Widget build(BuildContext context) {
     final inactiveColor = AppColors.mediumGray;

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logisticdriverapp/constants/bottom_show.dart';
-import 'package:logisticdriverapp/features/home/Profile/logout/logout_controller.dart';
+import 'package:logisticdriverapp/features/home/Settings/logout/logout_controller.dart';
 import '../../../constants/colors.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -132,10 +132,10 @@ class _SettingScreenState extends State<SettingScreen> {
         centerTitle: true,
         elevation: 0,
         toolbarHeight: 45,
-        leading: IconButton(
-          onPressed: () => context.go("/profile"),
-          icon: const Icon(Icons.arrow_back, size: 18),
-        ),
+        // leading: IconButton(
+        //   onPressed: () => context.go("/home"),
+        //   icon: const Icon(Icons.arrow_back, size: 18),
+        // ),
         backgroundColor: AppColors.electricTeal,
         foregroundColor: AppColors.pureWhite,
       ),
@@ -148,15 +148,26 @@ class _SettingScreenState extends State<SettingScreen> {
               title: "General",
               children: [
                 _buildSettingTile(
+                  Icons.person_outline,
+                  "Profile",
+                  () {
+                    context.push("/profile");
+                  },
+                ),
+                _buildSettingTile(
+                  Icons.document_scanner_outlined,
+                  "Documents",
+                  () {
+                    context.push("/document");
+                  },
+                ),
+                _buildSettingTile(
                   Icons.notifications_none,
                   "Notifications",
                   () {
                     context.push("/notifications");
                   },
                 ),
-                // _buildSettingTile(Icons.language, "Language", () {
-                //   showCenteredLanguageModal(context);
-                // }),
               ],
             ),
 
@@ -166,7 +177,7 @@ class _SettingScreenState extends State<SettingScreen> {
               title: "Security",
               children: [
                 _buildSettingTile(Icons.lock_outline, "Change Password", () {
-                  context.push("/change-password");
+                  context.push("/change-password-profile");
                 }),
               ],
             ),
@@ -349,7 +360,6 @@ class _SettingScreenState extends State<SettingScreen> {
   Widget _buildLogoutTile() {
     return Consumer(
       builder: (context, ref, _) {
-        final logoutState = ref.watch(logoutControllerProvider);
         final controller = ref.read(logoutControllerProvider.notifier);
 
         return InkWell(
@@ -367,22 +377,8 @@ class _SettingScreenState extends State<SettingScreen> {
 
                   context.go("/login");
 
-                  // ScaffoldMessenger.of(context).showSnackBar(
-                  //   const SnackBar(
-                  //     content: Text("Successfully logged out"),
-                  //     backgroundColor: Colors.green,
-                  //   ),
-                  // );
-
                   AppSnackBar.showSuccess(context, "Successfully logged out");
                 } catch (e) {
-                  // ScaffoldMessenger.of(context).showSnackBar(
-                  //   SnackBar(
-                  //     content: Text(e.toString()),
-                  //     backgroundColor: Colors.red,
-                  //   ),
-                  // );
-
                   AppSnackBar.showError(context, e.toString());
                 }
               },
@@ -403,14 +399,6 @@ class _SettingScreenState extends State<SettingScreen> {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                if (logoutState.isLoading) ...[
-                  const SizedBox(width: 10),
-                  const SizedBox(
-                    width: 16,
-                    height: 16,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  ),
-                ],
               ],
             ),
           ),

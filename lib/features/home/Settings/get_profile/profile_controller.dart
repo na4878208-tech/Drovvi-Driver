@@ -1,7 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
-import 'package:logisticdriverapp/features/home/Profile/get_profile/profile_model.dart';
-import 'package:logisticdriverapp/features/home/Profile/get_profile/profile_repository.dart';
+import 'package:logisticdriverapp/features/home/Settings/get_profile/profile_model.dart';
+import 'package:logisticdriverapp/features/home/Settings/get_profile/profile_repository.dart';
+
+
 
 final profileControllerProvider =
     StateNotifierProvider<ProfileController, AsyncValue<ProfileResponse>>(

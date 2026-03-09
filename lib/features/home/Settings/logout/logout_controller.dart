@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
-import 'package:logisticdriverapp/features/home/Profile/logout/logout_repo.dart';
+import 'package:logisticdriverapp/features/home/Settings/logout/logout_repo.dart';
 
 final logoutControllerProvider =
     StateNotifierProvider<LogoutController, AsyncValue<void>>(

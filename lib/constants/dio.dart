@@ -1,8 +1,8 @@
-
 import 'package:logisticdriverapp/constants/api_url.dart';
 import 'package:logisticdriverapp/constants/local_storage.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:dio/dio.dart';
+import 'token_manager.dart';
 
 part 'dio.g.dart';
 
@@ -20,36 +20,40 @@ Dio dio(Ref ref) {
     ),
   );
 
-  // API jin par token nahi lagana
-  final noAuthPaths = [
-    "/login",
-  ];
-
   dio.interceptors.add(
     InterceptorsWrapper(
       onRequest: (options, handler) async {
-        // Skip auth-free APIs
-        if (noAuthPaths.any((p) => options.path.contains(p))) {
-          print("🚫 Skipping token for → ${options.path}");
-          return handler.next(options);
-        }
-
+        // Attach token if available
         final token = await LocalStorage.getToken();
-
-        if (token != null && token.isNotEmpty) {
+        if (token != null) {
           options.headers["Authorization"] = "Bearer $token";
-          print("📌 Token added => $token");
-        } else {
-          print("❌ No token found — request WITHOUT token");
         }
-
         return handler.next(options);
       },
-      onError: (e, handler) {
-        if (e.response?.statusCode == 401) {
-          print("⛔ Unauthorized: Token missing or expired");
+
+      onError: (error, handler) async {
+        final requestPath = error.requestOptions.path;
+
+        // Only trigger session expired dialog for token-protected requests
+        final hasToken = error.requestOptions.headers.containsKey(
+          "Authorization",
+        );
+
+        // List of public endpoints that never trigger session expiration
+        final publicPaths = [
+          ApiUrls.login,
+          ApiUrls.forgotPassword,
+          ApiUrls.otpforgotPassword,
+          ApiUrls.resendotpforgotPassword,
+        ];
+
+        if (hasToken &&
+            !publicPaths.contains(requestPath) &&
+            error.response?.statusCode == 401) {
+          await SessionManager.handleSessionExpired();
         }
-        return handler.next(e);
+
+        return handler.next(error);
       },
     ),
   );

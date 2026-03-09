@@ -1,18 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../constants/bottom_show.dart';
 import '../../../../constants/validation_regx.dart';
 import '../../../../export.dart';
+import 'password_change_controller.dart';
+import 'password_change_modal.dart';
 
-class PasswordChangeScreen extends StatefulWidget {
-  const PasswordChangeScreen({super.key});
+class ResetPasswordChangeScreen extends StatefulWidget {
+  final String email;
+  final String resetToken;
+
+  const ResetPasswordChangeScreen({
+    super.key,
+    required this.email,
+    required this.resetToken,
+  });
 
   @override
-  State<PasswordChangeScreen> createState() => _PasswordChangeScreenState();
+  State<ResetPasswordChangeScreen> createState() =>
+      _ResetPasswordChangeScreenState();
 }
 
-class _PasswordChangeScreenState extends State<PasswordChangeScreen> {
-  final _formKey = GlobalKey<FormState>(); // 🔥 ADD THIS
+class _ResetPasswordChangeScreenState extends State<ResetPasswordChangeScreen> {
+  final _formKey = GlobalKey<FormState>();
 
   final passwordFocus = FocusNode();
   final confrompasswordFocus = FocusNode();
@@ -35,7 +47,6 @@ class _PasswordChangeScreenState extends State<PasswordChangeScreen> {
 
     newPasswordController.addListener(() {
       _validateForm();
-      // Show eye icon only if text is not empty
       setState(() {
         _showNewPassEye = newPasswordController.text.isNotEmpty;
       });
@@ -64,38 +75,58 @@ class _PasswordChangeScreenState extends State<PasswordChangeScreen> {
   }
 
   @override
+  void dispose() {
+    newPasswordController.dispose();
+    confirmPasswordController.dispose();
+    passwordFocus.dispose();
+    confrompasswordFocus.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final Color inactiveColor = AppColors.mediumGray;
+
     return Scaffold(
       backgroundColor: AppColors.lightGrayBackground,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 24),
           child: Form(
-            key: _formKey, // 🔥 IMPORTANT
+            key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                /// 🔙 Back
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: Text(
+                      "Back",
+                      style: TextStyle(
+                        color: AppColors.electricTeal,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 20),
-
                 CustomText(
                   txt: "DROVVI",
                   color: AppColors.electricTeal,
                   fontSize: 50,
                   fontWeight: FontWeight.bold,
                 ),
-
                 const SizedBox(height: 40),
-
                 CustomText(
-                  txt: "Password Change",
+                  txt: "Reset Password",
                   color: AppColors.electricTeal,
                   fontSize: 25,
                   fontWeight: FontWeight.w700,
                 ),
-
                 const SizedBox(height: 10),
-
                 CustomText(
                   txt:
                       "Set your password so you can Log In\nand access Resolve",
@@ -104,7 +135,6 @@ class _PasswordChangeScreenState extends State<PasswordChangeScreen> {
                   fontSize: 14,
                   height: 1.5,
                 ),
-
                 const SizedBox(height: 35),
 
                 // ---------------- NEW PASSWORD ----------------
@@ -133,11 +163,8 @@ class _PasswordChangeScreenState extends State<PasswordChangeScreen> {
                           },
                         )
                       : null,
-
-                  /// 🔥 VALIDATOR APPLY
                   validator: (value) => AppValidators.newPassword(value),
                 ),
-
                 const SizedBox(height: 20),
 
                 // ---------------- CONFIRM PASSWORD ----------------
@@ -166,7 +193,6 @@ class _PasswordChangeScreenState extends State<PasswordChangeScreen> {
                           },
                         )
                       : null,
-
                   validator: (value) => AppValidators.confirmPassword(
                     value,
                     newPasswordController.text,
@@ -175,24 +201,66 @@ class _PasswordChangeScreenState extends State<PasswordChangeScreen> {
 
                 const SizedBox(height: 64),
 
+                // ---------------- SUBMIT BUTTON ----------------
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: CustomButton(
-                    isChecked:
-                        _isFormValid, // ✅ use validation instead of just filled
-                    text: "Change Password",
-                    backgroundColor: _isFormValid
-                        ? AppColors.electricTeal
-                        : inactiveColor,
+                  child: Consumer(
+                    builder: (context, ref, _) {
+                      final state = ref.watch(resetPasswordControllerProvider);
+
+                      ref.listen<AsyncValue<ResetPasswordModel?>>(
+                        resetPasswordControllerProvider,
+                        (_, state) {
+                          state.when(
+                            data: (data) {
+                              if (data != null && data.success) {
+                                if (!mounted) return;
+
+                                AppSnackBar.showSuccess(context, data.message);
+                                context.go('/login');
+                              }
+                            },
+                            loading: () {},
+                            error: (e, st) {
+                              AppSnackBar.showError(context, e.toString());
+                            },
+                          );
+                        },
+                      );
+
+                      return CustomButton(
+                        isChecked: _isFormValid,
+                        text: state is AsyncLoading
+                            ? "Resetting..."
+                            : "Reset Password",
+                        backgroundColor: _isFormValid
+                            ? AppColors.electricTeal
+                            : inactiveColor,
                         borderColor: AppColors.electricTeal,
-                    textColor: AppColors.lightGrayBackground,
-                    onPressed: _isFormValid
-                        ? () {
-                            context.go('/login'); // ✅ Only when form valid
-                          }
-                        : null,
+                        textColor: AppColors.lightGrayBackground,
+                        onPressed: _isFormValid
+                            ? () {
+                                if (_formKey.currentState!.validate()) {
+                                  ref
+                                      .read(
+                                        resetPasswordControllerProvider
+                                            .notifier,
+                                      )
+                                      .resetPassword(
+                                        resetToken:
+                                            widget.resetToken, // ✅ FIXED
+                                        password: newPasswordController.text
+                                            .trim(),
+                                        passwordConfirmation:
+                                            confirmPasswordController.text
+                                                .trim(),
+                                      );
+                                }
+                              }
+                            : null,
+                      );
+                    },
                   ),
-                  
                 ),
 
                 const SizedBox(height: 35),

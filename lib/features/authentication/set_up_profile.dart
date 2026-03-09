@@ -191,6 +191,10 @@ class _SetUpProfileState extends ConsumerState<SetUpProfile> {
           "Set Up Profile",
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
+        leading: IconButton(
+          onPressed: () => context.go("/setting"),
+          icon: const Icon(Icons.arrow_back, size: 18),
+        ),
         foregroundColor: AppColors.pureWhite,
         backgroundColor: AppColors.electricTeal,
       ),

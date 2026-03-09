@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logisticdriverapp/constants/colors.dart';
 
-import '../../../export.dart';
+import '../../../../constants/bottom_show.dart';
+import '../../../../constants/validation_regx.dart';
+import '../../../../export.dart';
+import 'Change_password_controller.dart';
+import 'Change_password_modal.dart';
 
-class ChangePasswordScreen extends StatefulWidget {
+class ChangePasswordScreen extends ConsumerStatefulWidget {
   const ChangePasswordScreen({super.key});
 
   @override
-  State<ChangePasswordScreen> createState() => _ChangePasswordScreenState();
+  ConsumerState<ChangePasswordScreen> createState() =>
+      _ChangePasswordScreenState();
 }
 
-class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
+class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
   final currentpasswordFocus = FocusNode();
   final passwordFocus = FocusNode();
   final confrompasswordFocus = FocusNode();
@@ -22,9 +28,11 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   final TextEditingController confirmPasswordController =
       TextEditingController();
 
+  bool _obscureCurPass = true;
   bool _obscureNewPass = true;
   bool _obscureConPass = true;
 
+  bool _showCurPassEye = false;
   bool _showNewPassEye = false;
   bool _showConPassEye = false;
 
@@ -38,8 +46,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
   void _currentPasswordListener() {
     final shouldShow = currentPasswordController.text.isNotEmpty;
-    if (shouldShow != _showNewPassEye) {
-      setState(() => _showNewPassEye = shouldShow);
+    if (shouldShow != _showCurPassEye) {
+      setState(() => _showCurPassEye = shouldShow);
     }
   }
 
@@ -73,6 +81,26 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(changePasswordControllerProvider);
+
+    ref.listen<AsyncValue<ChangePasswordModel?>>(
+      changePasswordControllerProvider,
+      (_, state) {
+        state.when(
+          data: (data) {
+            if (data != null && data.success) {
+              AppSnackBar.showSuccess(context, data.message);
+
+              context.pop(); // back to profile
+            }
+          },
+          loading: () {},
+          error: (e, st) {
+            AppSnackBar.showError(context, e.toString());
+          },
+        );
+      },
+    );
     return Scaffold(
       backgroundColor: AppColors.lightGrayBackground,
       appBar: AppBar(
@@ -119,22 +147,23 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 iconColor: AppColors.electricTeal,
                 borderColor: AppColors.electricTeal,
                 textColor: AppColors.darkText,
-                obscureText: _obscureNewPass,
-                suffixIcon: _showNewPassEye
+                obscureText: _obscureCurPass,
+                suffixIcon: _showCurPassEye
                     ? IconButton(
                         icon: Icon(
-                          _obscureNewPass
+                          _obscureCurPass
                               ? Icons.visibility_off_outlined
                               : Icons.visibility_outlined,
                           color: AppColors.darkText,
                         ),
                         onPressed: () {
                           setState(() {
-                            _obscureNewPass = !_obscureNewPass;
+                            _obscureCurPass = !_obscureCurPass;
                           });
                         },
                       )
                     : null,
+                validator: (value) => AppValidators.newPassword(value),
               ),
 
               const SizedBox(height: 20),
@@ -165,6 +194,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         },
                       )
                     : null,
+                validator: (value) => AppValidators.newPassword(value),
               ),
 
               const SizedBox(height: 20),
@@ -194,6 +224,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         },
                       )
                     : null,
+                validator: (value) => AppValidators.confirmPassword(
+                  value,
+                  newPasswordController.text,
+                ),
               ),
 
               gapH64,
@@ -202,11 +236,23 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: CustomButton(
-                  text: "Change Password",
+                  text: state is AsyncLoading
+                      ? "Changing..."
+                      : "Change Password",
                   backgroundColor: AppColors.electricTeal,
                   borderColor: AppColors.electricTeal,
                   textColor: AppColors.pureWhite,
-                  onPressed: () {},
+                  onPressed: () async {
+                    await ref
+                        .read(changePasswordControllerProvider.notifier)
+                        .changePassword(
+                          currentPassword: currentPasswordController.text
+                              .trim(),
+                          newPassword: newPasswordController.text.trim(),
+                          confirmPassword: confirmPasswordController.text
+                              .trim(),
+                        );
+                  },
                 ),
               ),
 

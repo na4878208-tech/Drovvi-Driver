@@ -1,13 +1,16 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
-import 'package:logisticdriverapp/features/home/Profile/get_profile/edit_profile/edit_profile_modal.dart';
+import 'package:image_picker/image_picker.dart';
 import 'update_profile_repository.dart';
+import 'edit_profile_modal.dart';
 
 final updateProfileControllerProvider =
-    StateNotifierProvider<UpdateProfileController,
-        AsyncValue<UpdateProfileResponse?>>((ref) {
-  return UpdateProfileController(ref);
-});
+    StateNotifierProvider<
+      UpdateProfileController,
+      AsyncValue<UpdateProfileResponse?>
+    >((ref) {
+      return UpdateProfileController(ref);
+    });
 
 class UpdateProfileController
     extends StateNotifier<AsyncValue<UpdateProfileResponse?>> {
@@ -22,10 +25,11 @@ class UpdateProfileController
     required String emergencyPhone,
     required String latitude,
     required String longitude,
+    XFile? image,
   }) async {
-    try {
-      state = const AsyncLoading();
+    state = const AsyncLoading();
 
+    try {
       final repo = ref.read(updateProfileRepositoryProvider);
 
       final response = await repo.updateProfile(
@@ -35,10 +39,16 @@ class UpdateProfileController
         emergencyPhone: emergencyPhone,
         latitude: latitude,
         longitude: longitude,
+        image: image,
       );
+
+      print("PROFILE UPDATED SUCCESSFULLY");
+      print(response.message);
 
       state = AsyncData(response);
     } catch (e, st) {
+      print("PROFILE UPDATE ERROR");
+      print(e);
       state = AsyncError(e, st);
     }
   }

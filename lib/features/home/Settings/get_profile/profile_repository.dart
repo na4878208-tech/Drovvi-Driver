@@ -2,7 +2,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logisticdriverapp/constants/dio.dart';
 import 'package:logisticdriverapp/constants/local_storage.dart';
-import 'package:logisticdriverapp/features/home/Profile/get_profile/profile_model.dart';
+import 'package:logisticdriverapp/features/home/Settings/get_profile/profile_model.dart';
+
+import '../../../../constants/api_url.dart';
 
 class ProfileRepository {
   final Dio dio;
@@ -12,7 +14,7 @@ class ProfileRepository {
 
   Future<ProfileResponse> getProfile() async {
     try {
-      final url = "/driver/auth/profile";
+      final url = ApiUrls.baseurl + ApiUrls.getprofile;;
       final token = await LocalStorage.getToken() ?? "";
 
       final response = await dio.get(

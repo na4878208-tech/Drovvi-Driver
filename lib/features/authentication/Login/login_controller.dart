@@ -7,17 +7,28 @@ import 'login_repo.dart';
 class LoginController extends StateNotifier<AsyncValue<LoginModel?>> {
   final LoginRepository repository;
 
-  LoginController(this.repository) : super(const AsyncValue.data(null));
+  LoginController(this.repository) : super(const AsyncData(null));
 
   Future<void> login(String email, String password) async {
-    state = const AsyncValue.loading();
+    state = const AsyncLoading();
 
     try {
-      final result = await repository.login(email: email, password: password);
-      await LocalStorage.saveToken(result.data.accessToken);
-      state = AsyncValue.data(result);
+      final result = await repository.login(
+        email: email,
+        password: password,
+      );
+
+      // ✅ TOKEN SAVE FOR AUTH SESSION
+      final token = result.data.accessToken;
+
+      if (token.isNotEmpty) {
+        await LocalStorage.saveToken(token);
+      }
+
+      state = AsyncData(result);
+
     } catch (e, st) {
-      state = AsyncValue.error(e, st);
+      state = AsyncError(e, st);
     }
   }
 }

@@ -5,17 +5,17 @@ import 'package:logisticdriverapp/features/authentication/Registration_flow/otp_
 // Auth Screens
 import 'package:logisticdriverapp/features/authentication/Registration_flow/register.dart';
 import 'package:logisticdriverapp/features/authentication/Registration_flow/register_successful.dart';
-import 'package:logisticdriverapp/features/authentication/set_up_profile.dart';
 
 // Bottom Navbar
 import 'package:logisticdriverapp/features/bottom_navbar/bottom_navbar_screen.dart';
 
 // Splash
 import 'package:logisticdriverapp/features/custom_splash/splash.dart';
-import 'package:logisticdriverapp/features/home/Profile/Change_password_screen.dart';
-import 'package:logisticdriverapp/features/home/Profile/get_profile/edit_profile/Edit_profile.dart';
-import 'package:logisticdriverapp/features/home/Profile/help_support_screen.dart';
-import 'package:logisticdriverapp/features/home/Profile/setting_screen.dart';
+import 'package:logisticdriverapp/features/home/Settings/Change_password_flow/Change_password_screen.dart';
+import 'package:logisticdriverapp/features/home/Settings/documents/document_screen.dart';
+import 'package:logisticdriverapp/features/home/Settings/edit_profile/Edit_profile.dart';
+import 'package:logisticdriverapp/features/home/Settings/get_profile/get_profile_screen.dart';
+import 'package:logisticdriverapp/features/home/Settings/help_support_screen.dart';
 import 'package:logisticdriverapp/features/home/conform_order_screen.dart';
 import 'package:logisticdriverapp/features/home/conform_order_successfull.dart';
 
@@ -25,15 +25,18 @@ import 'package:logisticdriverapp/features/home/notification_screen.dart';
 import 'package:logisticdriverapp/features/home/order_successful.dart';
 import 'package:logisticdriverapp/features/home/summary_screen.dart';
 
+import '../../constants/token_expired.dart';
 import '../authentication/Login/login.dart';
 import '../authentication/Registration_flow/create_password.dart';
 import '../authentication/forget_password_flow/forget_password/forgot_password.dart';
 import '../authentication/forget_password_flow/otp/otp_forget.dart';
+import '../authentication/forget_password_flow/password_change/password_change.dart';
 import '../home/main_screens/home_screen/home_screen.dart';
 import '../home/order_details_screen/order_detail_modal.dart';
 import '../home/order_details_screen/order_tracking_history_screen.dart';
 
 final GoRouter router = GoRouter(
+  navigatorKey: NavigationService.navigatorKey,
   routes: [
     // ---------- Splash ----------
     GoRoute(path: '/', builder: (context, state) => const SplashScreen()),
@@ -59,15 +62,21 @@ final GoRouter router = GoRouter(
     ),
 
     GoRoute(
-      path: '/setup-profile',
-      builder: (context, state) => const SetUpProfile(),
+      path: '/document',
+      builder: (context, state) => const DriverDocumentsScreen(),
     ),
 
     GoRoute(
       path: '/otp-forget',
-      builder: (context, state) => const OtpForgetScreen(),
-    ),
+      builder: (context, state) {
+        final data = state.extra as Map<String, dynamic>?;
 
+        return OtpForgetScreen(
+          email: data?["email"] ?? "",
+          otp: data?["otp"] ?? 0,
+        );
+      },
+    ),
     GoRoute(
       path: '/otp-registration',
       builder: (context, state) => const OtpRegistrationScreen(),
@@ -75,7 +84,19 @@ final GoRouter router = GoRouter(
 
     GoRoute(
       path: '/change-password',
-      builder: (context, state) => const ChangePasswordScreen(),
+      builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>? ?? {};
+        final email = extra['email'] as String? ?? '';
+        final resetToken = extra['resetToken'] as String? ?? '';
+
+        return ResetPasswordChangeScreen(email: email, resetToken: resetToken);
+      },
+    ),
+
+     GoRoute(
+      path: '/change-password-profile',
+      builder: (context, state) =>
+          const ChangePasswordScreen(),
     ),
 
     // ---------- Bottom Navbar ----------
@@ -111,18 +132,20 @@ final GoRouter router = GoRouter(
     ),
 
     GoRoute(
-      path: '/profile',
+      path: '/setting',
       builder: (context, state) =>
           const TripsBottomNavBarScreen(initialIndex: 3),
     ),
 
     GoRoute(
+      path: '/profile',
+      builder: (context, state) =>
+          const GetProfileScreen(),
+    ),
+
+    GoRoute(
       path: '/edit-profile',
       builder: (context, state) => const EditProfileScreen(),
-    ),
-    GoRoute(
-      path: '/settings',
-      builder: (context, state) => const SettingScreen(),
     ),
     GoRoute(
       path: '/help-support',
@@ -191,35 +214,5 @@ final GoRouter router = GoRouter(
         return MapScreen(orderId: orderId, type: finalType);
       },
     ),
-
-    // GoRoute(
-    //   path: '/map',
-    //   builder: (context, state) {
-    //     // Extract orderId and type safely
-    //     final extra = state.extra as Map<String, dynamic>?;
-
-    //     // Safe fallback if extra is null or missing keys
-    //     if (extra == null || extra['order'] == null || extra['type'] == null) {
-    //       return const Scaffold(
-    //         body: Center(child: Text("Invalid map parameters")),
-    //       );
-    //     }
-
-    //     // Extract values
-    //     final orderId = extra['order'] is int
-    //         ? extra['order'] as int
-    //         : (extra['order']?.id ?? 0); // If 'order' is object, get its id
-    //     final type = extra['type'] as String;
-
-    //     // Check for invalid values
-    //     if (orderId == 0 || type.isEmpty) {
-    //       return const Scaffold(
-    //         body: Center(child: Text("Invalid map parameters")),
-    //       );
-    //     }
-
-    //     return MapScreen(orderId: orderId, type: type);
-    //   },
-    // ),
   ],
 );

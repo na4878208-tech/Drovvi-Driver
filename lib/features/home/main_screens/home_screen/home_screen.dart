@@ -8,15 +8,12 @@ import 'package:logisticdriverapp/constants/colors.dart';
 import 'package:logisticdriverapp/features/home/main_screens/my_order_screen/my_order_screen.dart';
 
 import '../../../../common_widgets/custom_button.dart';
+import '../../Settings/get_profile/profile_controller.dart';
 import '../my_order_screen/my_order_controller.dart';
 import '../my_order_screen/my_order_modal.dart';
 import 'home_controller.dart';
 import 'home_modal.dart';
 import 'package:shimmer/shimmer.dart';
-
-import 'package:flutter/material.dart';
-import 'package:shimmer/shimmer.dart';
-import '../../../../constants/colors.dart';
 
 class CurrentScreenShimmer extends StatelessWidget {
   const CurrentScreenShimmer({super.key});
@@ -68,9 +65,7 @@ class CurrentScreenShimmer extends StatelessWidget {
   Widget _appBarShimmer() {
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 50, 16, 16),
-      decoration: const BoxDecoration(
-        color: AppColors.electricTeal,
-      ),
+      decoration: const BoxDecoration(color: AppColors.electricTeal),
       child: Shimmer.fromColors(
         baseColor: Colors.white.withOpacity(0.35),
         highlightColor: Colors.white.withOpacity(0.7),
@@ -81,10 +76,7 @@ class CurrentScreenShimmer extends StatelessWidget {
               children: [
                 _box(width: 140, height: 18),
                 const Spacer(),
-                const CircleAvatar(
-                  radius: 14,
-                  backgroundColor: Colors.white,
-                ),
+                const CircleAvatar(radius: 14, backgroundColor: Colors.white),
               ],
             ),
             const SizedBox(height: 20),
@@ -127,12 +119,12 @@ class CurrentScreenShimmer extends StatelessWidget {
                     const SizedBox(width: 10),
                     _box(width: 110, height: 12, radius: 10),
                   ],
-                )
+                ),
               ],
             ),
           ),
 
-          _box(width: 40, height: 22, radius: 20)
+          _box(width: 40, height: 22, radius: 20),
         ],
       ),
     );
@@ -154,7 +146,7 @@ class CurrentScreenShimmer extends StatelessWidget {
             children: [
               _box(width: 6, height: 24),
               const SizedBox(width: 10),
-              _box(width: 120, height: 16),
+              Expanded(child: _box(height: 16)), // <-- instead of fixed width
             ],
           ),
           const SizedBox(height: 18),
@@ -171,7 +163,7 @@ class CurrentScreenShimmer extends StatelessWidget {
                 ],
               ),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -229,7 +221,7 @@ class CurrentScreenShimmer extends StatelessWidget {
               const SizedBox(height: 6),
               _box(width: 100, height: 12),
             ],
-          )
+          ),
         ],
       ),
     );
@@ -288,7 +280,7 @@ class CurrentScreenShimmer extends StatelessWidget {
 
           const SizedBox(height: 14),
 
-          _box(height: 44, radius: 12)
+          _box(height: 44, radius: 12),
         ],
       ),
     );
@@ -322,227 +314,6 @@ class CurrentScreenShimmer extends StatelessWidget {
     );
   }
 }
-
-// class CurrentScreenShimmer extends StatelessWidget {
-//   const CurrentScreenShimmer({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: AppColors.lightGrayBackground,
-//       body: Shimmer.fromColors(
-//         baseColor: Colors.grey.shade300,
-//         highlightColor: Colors.grey.shade100,
-//         child: SingleChildScrollView(
-//           padding: const EdgeInsets.all(16),
-//           child: Column(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               _driverHeader(),
-//               const SizedBox(height: 20),
-//               _infoCard(),
-//               const SizedBox(height: 16),
-//               _infoCard(),
-//               const SizedBox(height: 16),
-//               _infoCard(),
-//               const SizedBox(height: 20),
-//               _statsSection(),
-//               const SizedBox(height: 20),
-//               _ordersSection(),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-
-//   // ================= DRIVER HEADER =================
-//   Widget _driverHeader() {
-//     return Container(
-//       padding: const EdgeInsets.all(16),
-//       decoration: BoxDecoration(
-//         borderRadius: BorderRadius.circular(14),
-//         color: Colors.white,
-//       ),
-//       child: Row(
-//         children: [
-//           _circle(56),
-//           const SizedBox(width: 12),
-//           Expanded(
-//             child: Column(
-//               crossAxisAlignment: CrossAxisAlignment.start,
-//               children: [
-//                 _box(width: 160, height: 16),
-//                 const SizedBox(height: 8),
-//                 _box(width: 120, height: 12),
-//               ],
-//             ),
-//           ),
-//           _box(width: 40, height: 20, radius: 20),
-//         ],
-//       ),
-//     );
-//   }
-
-//   // ================= INFO CARD (Company/Depot/Vehicle) =================
-//   Widget _infoCard() {
-//     return Container(
-//       padding: const EdgeInsets.all(20),
-//       decoration: BoxDecoration(
-//         borderRadius: BorderRadius.circular(20),
-//         color: Colors.white,
-//       ),
-//       child: Column(
-//         crossAxisAlignment: CrossAxisAlignment.start,
-//         children: [
-//           _box(width: 120, height: 18),
-//           const SizedBox(height: 16),
-//           ...List.generate(
-//             4,
-//             (index) => Padding(
-//               padding: const EdgeInsets.symmetric(vertical: 8),
-//               child: Row(
-//                 children: [
-//                   _circle(30),
-//                   const SizedBox(width: 12),
-//                   Expanded(child: _box(height: 14)),
-//                 ],
-//               ),
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-
-//   // ================= STATS SECTION =================
-//   Widget _statsSection() {
-//     return Column(
-//       crossAxisAlignment: CrossAxisAlignment.start,
-//       children: [
-//         _box(width: 140, height: 18),
-//         const SizedBox(height: 14),
-//         Row(
-//           children: [
-//             Expanded(child: _statCard()),
-//             const SizedBox(width: 12),
-//             Expanded(child: _statCard()),
-//           ],
-//         ),
-//         const SizedBox(height: 16),
-//         _box(width: 140, height: 18),
-//         const SizedBox(height: 14),
-//         _statCard(),
-//         const SizedBox(height: 16),
-//         _box(width: 120, height: 18),
-//         const SizedBox(height: 14),
-//         _statCard(),
-//       ],
-//     );
-//   }
-
-//   Widget _statCard() {
-//     return Container(
-//       padding: const EdgeInsets.all(18),
-//       decoration: BoxDecoration(
-//         borderRadius: BorderRadius.circular(18),
-//         color: Colors.white,
-//       ),
-//       child: Row(
-//         children: [
-//           _circle(40),
-//           const SizedBox(width: 12),
-//           Column(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               _box(width: 80, height: 16),
-//               const SizedBox(height: 6),
-//               _box(width: 100, height: 12),
-//             ],
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-
-//   // ================= ORDERS SECTION =================
-//   Widget _ordersSection() {
-//     return Column(
-//       crossAxisAlignment: CrossAxisAlignment.start,
-//       children: [
-//         _box(width: 160, height: 18),
-//         const SizedBox(height: 14),
-//         ...List.generate(2, (index) => _orderCard()),
-//       ],
-//     );
-//   }
-
-//   Widget _orderCard() {
-//     return Padding(
-//       padding: const EdgeInsets.only(bottom: 16),
-//       child: Container(
-//         padding: const EdgeInsets.all(16),
-//         decoration: BoxDecoration(
-//           borderRadius: BorderRadius.circular(18),
-//           color: Colors.white,
-//         ),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             Row(
-//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//               children: [
-//                 _box(width: 120, height: 16),
-//                 _box(width: 70, height: 20, radius: 12),
-//               ],
-//             ),
-//             const SizedBox(height: 10),
-//             _box(height: 12),
-//             const SizedBox(height: 8),
-//             _box(height: 12),
-//             const SizedBox(height: 12),
-//             Row(
-//               children: [
-//                 _box(width: 80, height: 24, radius: 12),
-//                 const SizedBox(width: 8),
-//                 _box(width: 80, height: 24, radius: 12),
-//               ],
-//             ),
-//             const SizedBox(height: 14),
-//             _box(width: double.infinity, height: 44, radius: 14),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-
-//   // ================= COMMON BOX =================
-//   Widget _box({
-//     double width = double.infinity,
-//     required double height,
-//     double radius = 6,
-//   }) {
-//     return Container(
-//       width: width,
-//       height: height,
-//       decoration: BoxDecoration(
-//         color: Colors.white,
-//         borderRadius: BorderRadius.circular(radius),
-//       ),
-//     );
-//   }
-
-//   Widget _circle(double size) {
-//     return Container(
-//       width: size,
-//       height: size,
-//       decoration: const BoxDecoration(
-//         color: Colors.white,
-//         shape: BoxShape.circle,
-//       ),
-//     );
-//   }
-// }
 
 class CurrentScreen extends ConsumerStatefulWidget {
   final int initialTab;
@@ -599,6 +370,9 @@ class _CurrentScreenState extends ConsumerState<CurrentScreen>
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _tabController.animateTo(widget.initialTab);
+
+      // ✅ Refresh dashboard every time we enter this screen
+      ref.read(dashboardControllerProvider.notifier).fetch();
     });
   }
 
@@ -616,8 +390,6 @@ class _CurrentScreenState extends ConsumerState<CurrentScreen>
     return dashboardState.when(
       data: (dashboard) => _buildDashboardUI(dashboard!),
       loading: () => const CurrentScreenShimmer(),
-      // loading: () =>
-      //     const Scaffold(body: Center(child: CircularProgressIndicator())),
       error: (err, st) =>
           Scaffold(body: Center(child: Text("Error: ${err.toString()}"))),
     );
@@ -654,37 +426,61 @@ class _CurrentScreenState extends ConsumerState<CurrentScreen>
   }
 
   Widget _buildTripsList(DashboardModel dashboard) {
-    return RepaintBoundary(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildDriverHeaderCard(),
-            const SizedBox(height: 20),
-            _buildCompanyCard(dashboard.driverInfo.company),
-            const SizedBox(height: 16),
+    final profileAsync = ref.watch(profileControllerProvider);
 
-            _buildDepotCard(dashboard.driverInfo.depot),
-            const SizedBox(height: 16),
+    return profileAsync.when(
+      data: (profile) {
+        final missingDocs = profile.data.driver.missingDocuments;
 
-            _buildVehicleCard(dashboard.driverInfo.vehicle),
-            const SizedBox(height: 20),
-            _buildStats(dashboard.stats),
-            const SizedBox(height: 20),
-            _buildOrderTabDropdown(),
-            const SizedBox(height: 12),
+        return RepaintBoundary(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                /// 🔴 Missing Documents Banner (FROM PROFILE)
+                missingDocumentsBanner(
+                  missingDocs: missingDocs,
+                  context: context,
+                ),
 
-            if (selectedOrderTab == 0 && dashboard.activeOrder != null)
-              _buildTripCard(dashboard.activeOrder!),
+                const SizedBox(height: 10),
 
-            if (selectedOrderTab == 1) _buildOrderList(dashboard.pendingOrders),
+                _buildDriverHeaderCard(),
+                const SizedBox(height: 20),
 
-            if (selectedOrderTab == 2)
-              _buildRecentOrderList(dashboard.recentOrders),
-          ],
-        ),
-      ),
+                _buildCompanyCard(dashboard.driverInfo.company),
+                const SizedBox(height: 16),
+
+                _buildDepotCard(dashboard.driverInfo.depot),
+                const SizedBox(height: 16),
+
+                _buildVehicleCard(dashboard.driverInfo.vehicle),
+                const SizedBox(height: 20),
+
+                _buildStats(dashboard.stats),
+                const SizedBox(height: 20),
+
+                _buildOrderTabDropdown(),
+                const SizedBox(height: 12),
+
+                if (selectedOrderTab == 0 && dashboard.activeOrder != null)
+                  _buildTripCard(dashboard.activeOrder!),
+
+                if (selectedOrderTab == 1)
+                  _buildOrderList(dashboard.pendingOrders),
+
+                if (selectedOrderTab == 2)
+                  _buildRecentOrderList(dashboard.recentOrders),
+              ],
+            ),
+          ),
+        );
+      },
+
+      loading: () => const SizedBox(),
+
+      error: (_, __) => const SizedBox(),
     );
   }
 
@@ -741,15 +537,20 @@ class _CurrentScreenState extends ConsumerState<CurrentScreen>
                         const SizedBox(height: 6),
                         Row(
                           children: [
-                            _infoBubble(
-                              icon: Icons.star,
-                              label: driver.rating.toString(),
-                              isWhite: true,
+                            Flexible(
+                              child: _infoBubble(
+                                icon: Icons.star,
+                                label: driver.rating.toString(),
+                                isWhite: true,
+                              ),
                             ),
-                            _infoBubble(
-                              icon: Icons.badge,
-                              label: driver.licenseNumber,
-                              isWhite: true,
+                            const SizedBox(width: 6),
+                            Flexible(
+                              child: _infoBubble(
+                                icon: Icons.badge,
+                                label: driver.licenseNumber,
+                                isWhite: true,
+                              ),
                             ),
                           ],
                         ),
@@ -807,13 +608,6 @@ class _CurrentScreenState extends ConsumerState<CurrentScreen>
                             );
 
                             if (hasActiveOrder) {
-                              // ScaffoldMessenger.of(context).showSnackBar(
-                              //   const SnackBar(
-                              //     content: Text("Complete your order first"),
-                              //     backgroundColor: Colors.red,
-                              //   ),
-                              // );
-
                               AppSnackBar.showSuccess(
                                 context,
                                 "Complete your order first",
@@ -864,13 +658,17 @@ class _CurrentScreenState extends ConsumerState<CurrentScreen>
     return Stack(
       children: [
         CircleAvatar(
-          radius: 28,
-          backgroundColor: AppColors.pureWhite,
-          child: const CircleAvatar(
-            radius: 25,
-            backgroundImage: NetworkImage('https://i.pravatar.cc/150?img=12'),
-          ),
-        ),
+  radius: 28,
+  backgroundColor: Colors.white,
+  child: ClipOval(
+    child: Image.asset(
+      "assets/download.png",
+      width: 50,
+      height: 50,
+      fit: BoxFit.cover,
+    ),
+  ),
+),
         Positioned(
           bottom: 2,
           right: 2,
@@ -903,11 +701,15 @@ class _CurrentScreenState extends ConsumerState<CurrentScreen>
         children: [
           Icon(icon, size: 16, color: isWhite ? AppColors.pureWhite : null),
           const SizedBox(width: 3),
-          Text(
-            label,
-            style: TextStyle(
-              color: isWhite ? AppColors.pureWhite : null,
-              fontWeight: FontWeight.w800,
+          Expanded(
+            child: Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: isWhite ? AppColors.pureWhite : null,
+                fontWeight: FontWeight.w800,
+              ),
             ),
           ),
         ],
@@ -1564,4 +1366,97 @@ class _CurrentScreenState extends ConsumerState<CurrentScreen>
       ],
     );
   }
+}
+
+String formatDocumentName(String doc) {
+  switch (doc) {
+    case "id":
+      return "South African ID";
+
+    case "prdp":
+      return "Professional Driving Permit (PrDP)";
+
+    case "license":
+      return "Driver's License";
+    default:
+      return doc.replaceAll("_", " ");
+  }
+}
+
+Widget missingDocumentsBanner({
+  required List<String> missingDocs,
+  required BuildContext context,
+}) {
+  if (missingDocs.isEmpty) return const SizedBox();
+
+  return Container(
+    width: double.infinity,
+    padding: const EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      color: const Color(0xFFFFE082), // image jaisa color
+      borderRadius: BorderRadius.circular(12),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: const [
+            Icon(Icons.warning_amber_rounded, color: Colors.black87),
+            SizedBox(width: 8),
+            Text(
+              "Missing Required Documents",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+          ],
+        ),
+
+        const SizedBox(height: 8),
+
+        const Text(
+          "The following required documents are missing:",
+          style: TextStyle(fontSize: 14),
+        ),
+
+        const SizedBox(height: 8),
+
+        ...missingDocs.map((docType) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 2),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text("• "),
+                Expanded(
+                  child: Text(
+                    formatDocumentName(docType),
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }).toList(),
+
+        const SizedBox(height: 6),
+
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            TextButton(
+              onPressed: () {
+                context.push('/document');
+              },
+              child: const Text(
+                "View",
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.electricTeal,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
 }

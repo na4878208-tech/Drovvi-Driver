@@ -314,6 +314,10 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
           "Order Details",
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
+        // leading: IconButton(
+        //   onPressed: () => context.go("/home"),
+        //   icon: const Icon(Icons.arrow_back, size: 18),
+        // ),
         centerTitle: true,
         backgroundColor: AppColors.electricTeal,
         foregroundColor: AppColors.pureWhite,
@@ -984,7 +988,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                   icon = Icons.location_on;
                               }
 
-                              double topOffset = 50 + index * 135.0;
+                              double topOffset = 50 + index * 190.0;
 
                               return Positioned(
                                 top: topOffset,

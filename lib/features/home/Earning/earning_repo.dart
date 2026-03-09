@@ -19,10 +19,16 @@ class EarningRepository {
   final Dio dio;
   EarningRepository({required this.dio});
 
-  Future<List<EarningModel>> getEarnings() async {
+  /// Fetch earnings with period and page-based pagination
+  Future<List<EarningModel>> getEarnings({
+    String period = "week",
+    int page = 1,
+    int perPage = 10,
+  }) async {
     final token = await LocalStorage.getToken();
     final response = await dio.get(
       ApiUrls.earnings,
+      queryParameters: {"period": period, "page": page, "per_page": perPage},
       options: Options(
         headers: {
           "Content-Type": "application/json",
@@ -32,6 +38,7 @@ class EarningRepository {
     );
 
     if (response.statusCode == 200) {
+      // FIX: Parse correct data array from API response
       final data = response.data['data']['data'] as List<dynamic>? ?? [];
       return data.map((e) => EarningModel.fromJson(e)).toList();
     } else {
@@ -39,10 +46,12 @@ class EarningRepository {
     }
   }
 
-  Future<EarningSummary> getEarningsSummary() async {
+  /// Fetch summary with period
+  Future<EarningSummary> getEarningsSummary({String period = "week"}) async {
     final token = await LocalStorage.getToken();
     final response = await dio.get(
       ApiUrls.earningsSummary,
+      queryParameters: {"period": period},
       options: Options(
         headers: {
           "Content-Type": "application/json",

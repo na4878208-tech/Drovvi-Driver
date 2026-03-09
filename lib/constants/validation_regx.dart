@@ -1,5 +1,4 @@
 class AppValidators {
-
   // ---------------- EMAIL ----------------
   static String? email(String? value) {
     if (value == null || value.trim().isEmpty) {
@@ -118,15 +117,30 @@ class AppValidators {
     return null;
   }
 
-  // ---------------- DATE (YYYY-MM-DD) ----------------
+  // ---------------- DATE (MM-DD-YYYY) ----------------
   static String? dob(String? value) {
     if (value == null || value.trim().isEmpty) {
       return "Date is required";
     }
 
-    final dobRegex = RegExp(r'^\d{4}-\d{2}-\d{2}$');
+    final dobRegex = RegExp(r'^\d{2}-\d{2}-\d{4}$');
     if (!dobRegex.hasMatch(value)) {
-      return "Enter date in YYYY-MM-DD format";
+      return "Enter date in MM-DD-YYYY format";
+    }
+
+    try {
+      final parts = value.split("-");
+      final month = int.parse(parts[0]);
+      final day = int.parse(parts[1]);
+      final year = int.parse(parts[2]);
+
+      final date = DateTime(year, month, day);
+
+      if (date.month != month || date.day != day) {
+        return "Invalid date";
+      }
+    } catch (e) {
+      return "Invalid date";
     }
 
     return null;
@@ -138,18 +152,28 @@ class AppValidators {
       return "$field is required";
     }
 
-    final regex = RegExp(r'^\d{4}-\d{2}-\d{2}$');
+    final regex = RegExp(r'^\d{2}-\d{2}-\d{4}$');
     if (!regex.hasMatch(value)) {
-      return "Enter date in YYYY-MM-DD format";
+      return "Enter date in MM-DD-YYYY format";
     }
 
-    final date = DateTime.tryParse(value);
-    if (date == null) {
+    try {
+      final parts = value.split("-");
+      final month = int.parse(parts[0]);
+      final day = int.parse(parts[1]);
+      final year = int.parse(parts[2]);
+
+      final date = DateTime(year, month, day);
+
+      if (date.month != month || date.day != day) {
+        return "Invalid date";
+      }
+
+      if (date.isBefore(DateTime.now())) {
+        return "$field must be a future date";
+      }
+    } catch (e) {
       return "Invalid date";
-    }
-
-    if (date.isBefore(DateTime.now())) {
-      return "$field must be a future date";
     }
 
     return null;

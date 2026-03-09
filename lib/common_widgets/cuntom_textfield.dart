@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:logisticdriverapp/constants/colors.dart';
 
 class CustomAnimatedTextField extends StatefulWidget {
   final TextEditingController controller;
@@ -50,6 +51,8 @@ class _CustomAnimatedTextFieldState extends State<CustomAnimatedTextField> {
   @override
   void initState() {
     super.initState();
+    _hasText = widget.controller.text.isNotEmpty;
+
     widget.focusNode.addListener(_handleFocusChange);
     widget.controller.addListener(_handleTextChange);
   }
@@ -151,7 +154,7 @@ class _CustomAnimatedTextFieldState extends State<CustomAnimatedTextField> {
               duration: const Duration(milliseconds: 250),
               opacity: shouldFloat ? 1 : 0,
               child: Container(
-                color: Colors.white,
+                color: AppColors.lightGrayBackground,
                 padding: const EdgeInsets.symmetric(horizontal: 4),
                 child: Text(
                   widget.labelText,
@@ -179,106 +182,3 @@ class _CustomAnimatedTextFieldState extends State<CustomAnimatedTextField> {
     );
   }
 }
-
-
-
- // SizedBox(
-              //   height: 80,
-              //   child: Stack(
-              //     clipBehavior: Clip.none,
-              //     children: [
-              //       // Input Field
-              //       Positioned(
-              //         bottom: 0,
-              //         left: 0,
-              //         right: 0,
-              //         child: ClipRRect(
-              //           borderRadius: BorderRadius.circular(12),
-              //           child: BackdropFilter(
-              //             filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-              //             child: Container(
-              //               decoration: BoxDecoration(
-              //                 color: Colors.white.withOpacity(0.3),
-              //                 borderRadius: BorderRadius.circular(12),
-              //                 border: Border.all(
-              //                   color: Colors.white.withOpacity(0.4),
-              //                   width: 1.2,
-              //                 ),
-              //                 boxShadow: [
-              //                   BoxShadow(
-              //                     color: Colors.black.withOpacity(0.05),
-              //                     blurRadius: 6,
-              //                     offset: const Offset(0, 3),
-              //                   ),
-              //                 ],
-              //               ),
-              //               child: TextFormField(
-              //                 controller: emailController,
-              //                 focusNode: _focusNode,
-              //                 keyboardType: TextInputType.emailAddress,
-              //                 style: const TextStyle(color: Colors.black54),
-              //                 decoration: InputDecoration(
-              //                   prefixIcon: Icon(
-              //                     Icons.email_outlined,
-              //                     color: blueColor,
-              //                   ),
-              //                   hintText: "Email ID",
-              //                   hintStyle: const TextStyle(
-              //                     color: Colors.black45,
-              //                     fontSize: 15,
-              //                   ),
-              //                   border: OutlineInputBorder(
-              //                     borderRadius: BorderRadius.circular(12),
-              //                     borderSide: BorderSide.none,
-              //                   ),
-              //                   focusedBorder: OutlineInputBorder(
-              //                     borderRadius: BorderRadius.circular(12),
-              //                     borderSide: BorderSide(
-              //                       color: blueColor,
-              //                       width: 2,
-              //                     ),
-              //                   ),
-              //                   enabledBorder: OutlineInputBorder(
-              //                     borderRadius: BorderRadius.circular(12),
-              //                     borderSide: BorderSide(
-              //                       color: blueColor.withOpacity(0.6),
-              //                       width: 1.5,
-              //                     ),
-              //                   ),
-              //                   contentPadding: const EdgeInsets.symmetric(
-              //                     vertical: 18,
-              //                     horizontal: 16,
-              //                   ),
-              //                   filled: true,
-              //                   fillColor: Colors.white.withOpacity(0.3),
-              //                 ),
-              //               ),
-              //             ),
-              //           ),
-              //         ),
-              //       ),
-
-              //       AnimatedPositioned(
-              //         duration: const Duration(milliseconds: 250),
-              //         left: 6,
-              //         top: _isFocused ? -2 : 20,
-              //         child: AnimatedOpacity(
-              //           duration: const Duration(milliseconds: 250),
-              //           opacity: _isFocused ? 1 : 0,
-              //           child: Container(
-              //             color: const Color(0xFFF8F9FD),
-              //             padding: const EdgeInsets.symmetric(horizontal: 2),
-              //             child: Text(
-              //               "Email ID",
-              //               style: TextStyle(
-              //                 color: blueColor,
-              //                 fontSize: 13,
-              //                 fontWeight: FontWeight.w600,
-              //               ),
-              //             ),
-              //           ),
-              //         ),
-              //       ),
-              //     ],
-              //   ),
-              // ),

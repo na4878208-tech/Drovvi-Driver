@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart'; // import
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'export.dart';
 import 'features/routes/app_routes.dart';
@@ -9,17 +9,12 @@ import 'features/routes/app_routes.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // For Android Hybrid Composition
   if (defaultTargetPlatform == TargetPlatform.android) {
     // ignore: deprecated_member_use
     AndroidGoogleMapsFlutter.useAndroidViewSurface = true;
   }
 
-  runApp(
-    const ProviderScope(
-      child: MyApp(),
-    ),
-  );
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
